@@ -19,7 +19,7 @@ CHUNK_SIZE = 1024 * 1024
 
 # Имя итогового CSV -> (переменная окружения с ID файла на Drive, ID по умолчанию, архив ли это)
 SOURCES = {
-    "games": ("steam_games.csv", "STEAM_GAMES_DRIVE_ID", "16Voa_31N5cg1n_REv9KKJXPBvKyAAPOJ", False),
+    "games": ("steam_games.csv", "STEAM_GAMES_DRIVE_ID", "1yVfu0xU3bqR6qka_CoFak5tw-D1TUEAw", True),
     "reviews": ("steam_games_reviews.csv", "STEAM_REVIEWS_DRIVE_ID", "1EAemIGRXGZg6F-_reWqqY7RtkWdzGGcR", True),
 }
 

@@ -30,7 +30,7 @@
 
 | Файл | Размер | Ссылка |
 |---|---|---|
-| `steam_games.csv` — каталог игр | 925 МБ | [Drive](https://drive.google.com/file/d/16Voa_31N5cg1n_REv9KKJXPBvKyAAPOJ/view) |
+| `steam_games.csv` — каталог игр | 925 МБ, в ZIP 179 МБ | [CSV](https://drive.google.com/file/d/16Voa_31N5cg1n_REv9KKJXPBvKyAAPOJ/view), [ZIP](https://drive.google.com/file/d/1yVfu0xU3bqR6qka_CoFak5tw-D1TUEAw/view) |
 | `steam_games_reviews.csv` — цитаты прессы | 4,6 МБ | [CSV](https://drive.google.com/file/d/1YT7nzrsan8wlTijG6cx6CXLjW6aRwg2y/view), [ZIP](https://drive.google.com/file/d/1EAemIGRXGZg6F-_reWqqY7RtkWdzGGcR/view) |
 
 Скачать оба файла в `data/`:
