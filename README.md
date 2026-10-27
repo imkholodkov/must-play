@@ -24,6 +24,42 @@
 | `data/sample/` | выборка датасета для тестов |
 | `docs/` | задание, ERD, отчёты |
 
+## Запуск
+
+Через Docker (приложение и PostgreSQL):
+
+```bash
+cp .env.example .env
+docker compose up --build
+```
+
+Локально (нужен Python 3.12 и запущенный PostgreSQL):
+
+```bash
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements-dev.txt
+uvicorn app.main:app --reload
+```
+
+Проверка: http://localhost:8000/health, документация API — http://localhost:8000/docs.
+
+## Тесты и линтинг
+
+```bash
+ruff check . && ruff format --check .
+pytest
+```
+
+`pytest` считает покрытие и падает, если оно ниже 70%. Те же проверки запускает GitHub Actions на каждый push и PR.
+
+## Переменные окружения
+
+| Переменная | Назначение |
+|---|---|
+| `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB` | учётные данные PostgreSQL в docker compose |
+| `DATABASE_URL` | строка подключения SQLAlchemy |
+| `STEAM_GAMES_DRIVE_ID`, `STEAM_REVIEWS_DRIVE_ID` | ID файлов датасета на Google Drive |
+
 ## Данные
 
 Полный датасет Steam в репозиторий не входит: GitHub не принимает файлы больше 100 МБ. Файлы лежат на Google Drive с доступом по ссылке.
