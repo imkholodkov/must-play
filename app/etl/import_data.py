@@ -66,7 +66,8 @@ def run_import(session: Session, source: Path, batch_size: int = 1000) -> EtlRun
         if batch:
             flush()
         run.status = "success"
-    except Exception:
+    except BaseException:
+        # BaseException: прерывание по Ctrl+C тоже должно пометить запуск как failed, а не оставить running
         session.rollback()
         run = session.merge(run)
         run.status = "failed"
