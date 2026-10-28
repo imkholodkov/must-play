@@ -14,9 +14,13 @@ MIN_VOTES = 50  # порог из лабы 6: при меньшем числе �
 MIN_CRITIC_REVIEWS = 2  # одна оценка прессы — ещё не мнение прессы
 CRITIC_WEIGHT = 0.4
 PLAYER_WEIGHT = 0.6
+# Пресса в среднем на 7 пунктов щедрее игроков на тех же играх (85,4 против 78,3 на полном датасете):
+# поправка убирает эту систематическую разницу перед смешиванием и сравнением
+CRITIC_OFFSET = 7.0
 DIVERGENCE_POINTS = 20
-MUST_PLAY_IN = 85.0
-MUST_PLAY_OUT = 80.0  # ниже порога входа, чтобы игра не прыгала туда-обратно при каждом пересчёте
+# Пороги по распределению индекса: 95 — около 97-го перцентиля, в must play попадают верхние ~4% игр
+MUST_PLAY_IN = 95.0
+MUST_PLAY_OUT = 93.0  # ниже порога входа, чтобы игра не прыгала туда-обратно при каждом пересчёте
 
 CANDIDATE, IN_LIST, DROPPED = "candidate", "in_list", "dropped"
 
@@ -45,22 +49,27 @@ class Score:
 
 
 def score_game(positive: int, negative: int, critic_avg: float | None, critic_count: int) -> Score:
-    """Посчитать оценки одной игры по правилам 1–3."""
+    """Посчитать оценки одной игры по правилам 1–3.
+
+    critic_score сохраняется как есть (средняя оценка прессы), а в индекс и сравнение
+    с игроками идёт оценка с поправкой на щедрость прессы.
+    """
     player = wilson_lower_bound(positive, negative)
     critic = round(critic_avg, 2) if critic_avg is not None and critic_count >= MIN_CRITIC_REVIEWS else None
+    adjusted = max(critic - CRITIC_OFFSET, 0.0) if critic is not None else None
     eligible = positive + negative >= MIN_VOTES
 
     if player is None:
         index = None
-    elif critic is None:
+    elif adjusted is None:
         index = player
     else:
-        index = round(CRITIC_WEIGHT * critic + PLAYER_WEIGHT * player, 2)
+        index = round(CRITIC_WEIGHT * adjusted + PLAYER_WEIGHT * player, 2)
 
     divergence = None
     share = positive / (positive + negative) * 100 if positive + negative else None
-    if critic is not None and share is not None and eligible and abs(critic - share) > DIVERGENCE_POINTS:
-        divergence = "overrated" if critic > share else "underrated"
+    if adjusted is not None and share is not None and eligible and abs(adjusted - share) > DIVERGENCE_POINTS:
+        divergence = "overrated" if adjusted > share else "underrated"
     return Score(player, critic, index, eligible, divergence)
 
 
