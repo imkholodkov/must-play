@@ -17,7 +17,7 @@ class Outlet(Base):
 class CriticReview(Base):
     __tablename__ = "critic_reviews"
     __table_args__ = (
-        UniqueConstraint("app_id", "outlet_id", name="one_review_per_outlet"),
+        UniqueConstraint("app_id", "outlet_id"),
         CheckConstraint("score BETWEEN 0 AND 100", name="score_range"),
     )
 
