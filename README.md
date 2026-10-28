@@ -50,6 +50,15 @@ ruff check . && ruff format --check .
 pytest
 ```
 
+Тесты с БД работают в транзакции, которая откатывается после каждого теста. Запускайте их на отдельной базе, иначе данные основной БД попадут в проверки:
+
+```bash
+docker compose exec db psql -U mustplay -c "create database mustplay_test"
+DATABASE_URL=postgresql+psycopg://mustplay:change-me@localhost:5432/mustplay_test pytest
+```
+
+Если PostgreSQL недоступен, тесты с БД пропускаются.
+
 `pytest` считает покрытие и падает, если оно ниже 70%. Те же проверки запускает GitHub Actions на каждый push и PR.
 
 ## Переменные окружения
@@ -74,5 +83,15 @@ pytest
 ```bash
 python -m app.etl.download_data
 ```
+
+Выборка из 305 строк для тестов лежит в `data/sample/steam_games_sample.csv`.
+
+### Импорт в БД (ETL)
+
+```bash
+python -m app.etl.import_data --source data/steam_games.csv
+```
+
+Этапы: потоковое чтение CSV → проверка строки (нет app_id или названия, отрицательные голоса, дубль app_id — строка отклоняется с причиной) → очистка и унификация (`app/etl/cleaning.py`) → загрузка пачками с upsert по `app_id` → отчёт в таблице `etl_runs`. Повторный запуск дублей не создаёт: игры обновляются, связи со справочниками перезаписываются.
 
 Уже скачанные файлы пропускаются, `--force` перекачивает, `--only games` или `--only reviews` скачивает один файл. ID файлов на Drive можно переопределить переменными `STEAM_GAMES_DRIVE_ID` и `STEAM_REVIEWS_DRIVE_ID`.
