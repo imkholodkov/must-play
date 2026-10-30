@@ -1,0 +1,29 @@
+{
+  "hit": {
+    "best": "gradient_boosting",
+    "roc_auc": {
+      "logistic_regression": 0.7759,
+      "random_forest": 0.8038,
+      "gradient_boosting": 0.8041
+    },
+    "train_size": 45410,
+    "test_size": 11353,
+    "positive_share": 0.1,
+    "features": 115,
+    "min_votes": 10,
+    "wilson_threshold": 89.17800000000004
+  },
+  "press": {
+    "best": "random_forest",
+    "roc_auc": {
+      "logistic_regression": 0.6954,
+      "random_forest": 0.7401,
+      "gradient_boosting": 0.7085
+    },
+    "train_size": 4700,
+    "test_size": 1175,
+    "positive_share": 0.906,
+    "features": 115,
+    "press_threshold": 75
+  }
+}
