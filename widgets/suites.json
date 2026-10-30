@@ -1,0 +1,1 @@
+{"total":2,"items":[{"uid":"419d171b229f7090020b2cc54cab1eee","name":"Unit-тесты","statistic":{"failed":0,"broken":0,"skipped":0,"passed":92,"unknown":0,"total":92}},{"uid":"814c3b2f9ea493d41e8ac002fc9ccfb8","name":"Интеграционные тесты","statistic":{"failed":0,"broken":0,"skipped":0,"passed":53,"unknown":0,"total":53}}]}
