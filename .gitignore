@@ -14,3 +14,4 @@ data/*.csv
 !data/sample/*.csv
 allure-results/
 allure-report/
+coverage.json

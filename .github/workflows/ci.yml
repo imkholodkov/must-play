@@ -39,7 +39,7 @@ jobs:
           ruff check .
           ruff format --check .
       - name: Тесты с покрытием
-        run: pytest --alluredir allure-results
+        run: pytest --alluredir allure-results --cov-report=html --cov-report=json
 
       # Отчёт Allure публикуется на GitHub Pages только для main, даже если тесты упали
       - name: История прошлых отчётов
@@ -61,7 +61,17 @@ jobs:
           # история прошлых прогонов даёт в отчёте графики трендов
           mkdir -p allure-results/history
           cp -r gh-pages/history/. allure-results/history/ 2>/dev/null || true
+          # блок Environment на главной странице отчёта: покрытие и ссылка на отчёт по файлам
+          COVERAGE=$(python -c "import json; print(round(json.load(open('coverage.json'))['totals']['percent_covered'], 2))" 2>/dev/null || echo "n/a")
+          PAGES_URL="https://${GITHUB_REPOSITORY_OWNER}.github.io/${GITHUB_REPOSITORY#*/}"
+          {
+            echo "Coverage=${COVERAGE}%"
+            echo "Coverage.report=${PAGES_URL}/coverage/"
+            echo "Python=$(python --version | cut -d' ' -f2)"
+            echo "Commit=${GITHUB_SHA::7}"
+          } > allure-results/environment.properties
           ./allure-2.38.1/bin/allure generate allure-results -o allure-history --clean
+          if [ -d htmlcov ]; then cp -r htmlcov allure-history/coverage; fi
       - name: Публикация на GitHub Pages
         if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v4
