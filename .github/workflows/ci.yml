@@ -71,7 +71,8 @@ jobs:
             echo "Commit=${GITHUB_SHA::7}"
           } > allure-results/environment.properties
           ./allure-2.38.1/bin/allure generate allure-results -o allure-history --clean
-          if [ -d htmlcov ]; then cp -r htmlcov allure-history/coverage; fi
+          # coverage.py кладёт в htmlcov свой .gitignore со «*» — без удаления страница не попадёт в gh-pages
+          if [ -d htmlcov ]; then cp -r htmlcov allure-history/coverage && rm -f allure-history/coverage/.gitignore; fi
       - name: Публикация на GitHub Pages
         if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v4
