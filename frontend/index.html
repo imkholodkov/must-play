@@ -1,5 +1,29 @@
 <!doctype html>
 <html lang="ru">
-<head><meta charset="utf-8"><title>Must Play</title></head>
-<body></body>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Must Play</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <a class="logo" href="#/rating">MUST PLAY</a>
+    <nav>
+      <a href="#/rating" data-nav="rating">Рейтинг</a>
+      <a href="#/must-play" data-nav="must-play">Must play</a>
+      <a href="#/pick" data-nav="pick">Во что поиграть</a>
+      <a href="#/analytics" data-nav="analytics">Аналитика</a>
+      <a href="#/catalog" data-nav="catalog">Каталог</a>
+    </nav>
+  </header>
+
+  <div id="error" class="error" role="alert" hidden></div>
+  <main id="view"></main>
+
+  <footer class="bottom">
+    Данные: открытый датасет Steam. API — <a href="/docs">Swagger</a>.
+  </footer>
+  <script src="app.js"></script>
+</body>
 </html>
