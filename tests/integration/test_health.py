@@ -27,3 +27,17 @@ def test_health_reports_unavailable_database():
 
     assert response.status_code == 200
     assert response.json() == {"status": "ok", "database": "unavailable"}
+
+
+def test_root_redirects_to_ui():
+    response = TestClient(app).get("/", follow_redirects=False)
+
+    assert response.status_code == 307
+    assert response.headers["location"] == "/ui/"
+
+
+def test_ui_served():
+    client = TestClient(app)
+
+    assert "Must Play" in client.get("/ui/").text
+    assert client.get("/ui/app.js").status_code == 200
