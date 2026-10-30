@@ -93,7 +93,7 @@ DATABASE_URL=postgresql+psycopg://mustplay:change-me@localhost:5432/mustplay_tes
 
 Если PostgreSQL недоступен, тесты с БД пропускаются.
 
-Отчёт о тестах в Allure: **https://imkholodkov.github.io/must-play/** — CI публикует его на GitHub Pages после каждого push в main, с историей прогонов. Локально:
+Отчёт о тестах в Allure: **https://imkholodkov.github.io/must-play/** — CI публикует его на GitHub Pages после каждого push в main, с историей прогонов. Процент покрытия — в блоке Environment на главной странице отчёта, подробный отчёт покрытия по файлам — **https://imkholodkov.github.io/must-play/coverage/**. Локально:
 
 ```bash
 pytest --alluredir allure-results
