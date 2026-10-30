@@ -2,7 +2,7 @@
 
 from fastapi import FastAPI
 
-from app.api import analytics, games, genres, health, rating, recommendations
+from app.api import analytics, games, genres, health, ml, rating, recommendations
 from app.core.config import get_settings
 from app.core.errors import register_error_handlers
 
@@ -12,5 +12,5 @@ app = FastAPI(
     version="0.1.0",
 )
 register_error_handlers(app)
-for module in (health, games, genres, rating, recommendations, analytics):
+for module in (health, games, genres, rating, recommendations, analytics, ml):
     app.include_router(module.router)
