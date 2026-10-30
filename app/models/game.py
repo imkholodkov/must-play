@@ -58,3 +58,4 @@ class Game(Base):
     categories: Mapped[list[Category]] = relationship(secondary=game_categories)
     languages: Mapped[list[Language]] = relationship(secondary=game_languages)
     developers: Mapped[list[Developer]] = relationship(secondary=game_developers)
+    score: Mapped["GameScore | None"] = relationship(viewonly=True)  # noqa: F821
