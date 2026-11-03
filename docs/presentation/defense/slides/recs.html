@@ -1,0 +1,24 @@
+<section id="recs" data-transition="fade" style="background:#14161F;color:#F3F1EA;font-family:'Rubik', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:40px">
+<h2 style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;line-height:1.1">Рекомендации и ML</h2>
+<div style="display:flex;gap:32px">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#1F2230;padding:40px;border-radius:16px">
+<h3 style="font-size:34px;font-weight:700;color:#F2A541">Рекомендательная система</h3>
+<ul style="font-size:26px;line-height:1.5;color:#D4D6DE">
+<li>TF-IDF по жанрам, тегам, категориям + косинусная близость</li>
+<li>Порядок: 0,8 × близость + 0,2 × качество</li>
+<li>Stardew Valley → Coral Island, My Time at Portia</li>
+<li>Подбор по анкете: жанр, режим, платформа, язык, цена</li>
+</ul>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#1F2230;padding:40px;border-radius:16px">
+<h3 style="font-size:34px;font-weight:700;color:#5BA4E6">ML: ROC-AUC на тесте</h3>
+<table style="font-size:26px;color:#E4E2DA">
+<tr><th style="width:40%;padding:10px 14px">Модель</th><th style="width:20%">LogReg</th><th style="width:20%">RF</th><th style="width:20%">GB</th></tr>
+<tr><td style="padding:10px 14px">hit — станет ли хитом</td><td>0,776</td><td>0,804</td><td>0,804</td></tr>
+<tr><td style="padding:10px 14px">press — пресса 75+</td><td>0,695</td><td>0,740</td><td>0,709</td></tr>
+</table>
+<p style="font-size:24px;color:#A9AEBB">Лучшая модель → pkl; /ml/upload-model, /ml/predict, /ml/predict-from-csv</p>
+</div>
+</div>
+<aside>Голоса, онлайн и владельцы не входят в признаки — по ним считается цель. Для hit лучший — градиентный бустинг, для press — случайный лес.</aside>
+</section>

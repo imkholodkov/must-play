@@ -1,0 +1,33 @@
+<section id="etl-ml" data-transition="fade" style="background:#14161F;color:#F3F1EA;font-family:'Rubik', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:48px">
+<h2 style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;line-height:1.1">Загрузка данных, отчёты и машинное обучение</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px">
+<div style="display:flex;flex-direction:column;gap:16px;background:#1F2230;padding:40px;border-radius:16px">
+<h3 style="font-size:36px;font-weight:700;color:#F2A541">Загрузка (ETL)</h3>
+<ul style="font-size:26px;line-height:1.5;color:#D4D6DE">
+<li>Скрипт читает CSV-файлы</li>
+<li>Чистит и проверяет строки</li>
+<li>Кладёт в базу данных</li>
+<li>Повторный запуск не плодит дубли</li>
+<li>Пишет отчёт: сколько загружено, сколько отброшено и почему</li>
+</ul>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px;background:#1F2230;padding:40px;border-radius:16px">
+<h3 style="font-size:36px;font-weight:700;color:#F2A541">Отчёты</h3>
+<ul style="font-size:26px;line-height:1.5;color:#D4D6DE">
+<li>Лучшие игры по жанрам и десятилетиям</li>
+<li>Игры, которые журналисты перехвалили или недооценили</li>
+<li>Самые строгие и самые щедрые издания</li>
+</ul>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px;background:#1F2230;padding:40px;border-radius:16px">
+<h3 style="font-size:36px;font-weight:700;color:#5BA4E6">Две ML-модели</h3>
+<ul style="font-size:26px;line-height:1.5;color:#D4D6DE">
+<li>Станет ли игра хитом — по цене, жанру, платформам</li>
+<li>Понравится ли игра журналистам — для игр без обзоров</li>
+<li>Сравниваю 3 алгоритма, оставляю лучший</li>
+<li>Модель можно загрузить и проверить через API</li>
+</ul>
+</div>
+</div>
+<aside>Метрика выбора модели — ROC-AUC. Эндпоинты: /upload-model, /predict, /predict-from-csv.</aside>
+</section>

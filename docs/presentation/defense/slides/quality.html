@@ -1,0 +1,31 @@
+<section id="quality" data-transition="fade" style="background:#F3F1EA;color:#14161F;font-family:'Rubik', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px">
+<h2 style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;line-height:1.1">Качество и демо</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:32px">
+<div style="display:flex;flex-direction:column;gap:12px;background:#FBFAF6;padding:40px;border:1px solid #DDD8CC;border-radius:16px">
+<p style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;color:#B4651A">145</p>
+<p style="font-size:28px;color:#3C4150">тестов: 92 unit, 53 интеграционных</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#FBFAF6;padding:40px;border:1px solid #DDD8CC;border-radius:16px">
+<p style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;color:#B4651A">94%</p>
+<p style="font-size:28px;color:#3C4150">покрытие кода, порог 70%</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#FBFAF6;padding:40px;border:1px solid #DDD8CC;border-radius:16px">
+<p style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;color:#B4651A">CI</p>
+<p style="font-size:28px;color:#3C4150">ruff + pytest на каждый push</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#FBFAF6;padding:40px;border:1px solid #DDD8CC;border-radius:16px">
+<p style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;color:#B4651A">Allure</p>
+<p style="font-size:28px;color:#3C4150">отчёт с историей на GitHub Pages</p>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<h3 style="font-size:36px;font-weight:700">Демо</h3>
+<ul style="font-size:28px;line-height:1.6;color:#3C4150">
+<li>Веб-интерфейс: рейтинг → карточка игры → «во что поиграть» → аналитика</li>
+<li>Swagger: создание игры, ошибки 409 и 422, пересчёт рейтинга</li>
+<li>Отчёт Allure и покрытие: imkholodkov.github.io/must-play</li>
+</ul>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1600px;font-size:24px;color:#6A6F7C">github.com/imkholodkov/must-play · docker compose up</p>
+<aside>Тесты с БД идут на отдельной базе в транзакции с откатом. В CI PostgreSQL поднимается как сервис.</aside>
+</section>

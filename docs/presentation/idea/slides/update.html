@@ -1,0 +1,37 @@
+<section id="update" data-transition="fade" style="background:#F3F1EA;color:#14161F;font-family:'Rubik', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px">
+<h2 style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;line-height:1.1">Как обновляется рейтинг</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:24px">
+<div style="display:flex;flex-direction:column;gap:16px;background:#FBFAF6;padding:32px;border:1px solid #DDD8CC;border-radius:16px">
+<p style="font-family:'Oswald', Arial, sans-serif;font-size:64px;font-weight:600;color:#B4651A">1</p>
+<h3 style="font-size:32px;font-weight:700">Новые данные</h3>
+<p style="font-size:26px;line-height:1.4;color:#3C4150">Свежая выгрузка Steam: новые игры, голоса, обзоры</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px;background:#FBFAF6;padding:32px;border:1px solid #DDD8CC;border-radius:16px">
+<p style="font-family:'Oswald', Arial, sans-serif;font-size:64px;font-weight:600;color:#B4651A">2</p>
+<h3 style="font-size:32px;font-weight:700">Проверка</h3>
+<p style="font-size:26px;line-height:1.4;color:#3C4150">Чистка, отброс битых строк, без дублей</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px;background:#FBFAF6;padding:32px;border:1px solid #DDD8CC;border-radius:16px">
+<p style="font-family:'Oswald', Arial, sans-serif;font-size:64px;font-weight:600;color:#B4651A">3</p>
+<h3 style="font-size:32px;font-weight:700">Пересчёт</h3>
+<p style="font-size:26px;line-height:1.4;color:#3C4150">Новые оценки всех игр — целиком или никак</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px;background:#FBFAF6;padding:32px;border:1px solid #DDD8CC;border-radius:16px">
+<p style="font-family:'Oswald', Arial, sans-serif;font-size:64px;font-weight:600;color:#B4651A">4</p>
+<h3 style="font-size:32px;font-weight:700">Must play</h3>
+<p style="font-size:26px;line-height:1.4;color:#3C4150">Игра входит, остаётся или выбывает</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px;background:#14161F;padding:32px;border-radius:16px">
+<p style="font-family:'Oswald', Arial, sans-serif;font-size:64px;font-weight:600;color:#F2A541">5</p>
+<h3 style="font-size:32px;font-weight:700;color:#F3F1EA">История</h3>
+<p style="font-size:26px;line-height:1.4;color:#E4E2DA">Снимок рейтинга и отчёт: что изменилось</p>
+</div>
+</div>
+<ul style="font-size:30px;line-height:1.5;color:#3C4150">
+<li>Запуск — командой или по расписанию, например раз в неделю</li>
+<li>Если пересчёт упал, остаётся прошлая версия рейтинга</li>
+<li>По истории видно, как игра поднималась и падала со временем</li>
+</ul>
+<p style="position:absolute;left:128px;bottom:64px;width:1600px;font-size:24px;color:#6A6F7C">Пример запуска: python -m app.etl.import_data --source data/steam_games.csv</p>
+<aside>Шаг 3 — одна транзакция. Шаг 4 — смена статусов: кандидат, в списке, выбыла.</aside>
+</section>

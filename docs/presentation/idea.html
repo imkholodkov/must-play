@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Must Play — рейтинг игр всех времён</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400..700&family=Rubik:wght@400;500;700&display=swap">
+<style>
+  html, body { margin: 0; height: 100%; background: #0d0e13; overflow: hidden; }
+  #stage { position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px; transform-origin: 0 0; }
+  section { position: absolute; inset: 0; box-sizing: border-box; }
+  /* у слайдов display задан в style, поэтому скрывать неактивные можно только через !important */
+  section:not(.active) { display: none !important; }
+  section aside { display: none; }
+  section h1, section h2, section h3, section p, section ul, section ol { margin: 0; }
+  section table { border-collapse: collapse; }
+  section th, section td { text-align: left; border-bottom: 1px solid rgba(128, 128, 128, .3); }
+  #counter { position: fixed; right: 16px; bottom: 12px; color: #8a90a0; font: 14px sans-serif; }
+</style>
+</head>
+<body>
+<div id="stage">
+<section id="cover" data-transition="fade" style="background:#14161F;color:#F3F1EA;font-family:'Rubik', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;justify-content:center;gap:40px">
+<p style="font-size:32px;color:#F2A541;letter-spacing:4px;text-transform:uppercase">Итоговый проект · Python и инженерия данных</p>
+<h1 style="font-family:'Oswald', Arial, sans-serif;font-size:160px;font-weight:700;line-height:1.0">MUST PLAY</h1>
+<p style="font-size:48px;color:#BFC3CF;width:1400px">Рейтинг игр всех времён: оценки прессы и игроков, кураторский список и подбор «во что поиграть»</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1200px;font-size:28px;color:#8A90A0">Холодков Иван · ИТМО · 2026</p>
+<aside>Идея: сервис, который отвечает на вопрос «во что поиграть», опираясь на данные Steam.</aside>
+</section>
+
+<section id="problem" data-transition="fade" style="background:#F3F1EA;color:#14161F;font-family:'Rubik', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:56px">
+<h2 style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;line-height:1.1">Зачем это нужно</h2>
+<div style="display:flex;gap:48px;flex:1">
+<div style="flex:1;display:flex;flex-direction:column;gap:24px;background:#FBFAF6;padding:48px;border:1px solid #DDD8CC;border-radius:16px">
+<h3 style="font-size:40px;font-weight:700;color:#B4651A">Сейчас</h3>
+<ul style="font-size:32px;line-height:1.45;color:#3C4150">
+<li>В Steam 140 тысяч игр — глаза разбегаются</li>
+<li>Оценки журналистов записаны по-разному: «4/5», «9.3/10», «85%»</li>
+<li>Журналисты хвалят, а игроки ругают — кому верить?</li>
+</ul>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:24px;background:#14161F;padding:48px;border-radius:16px">
+<h3 style="font-size:40px;font-weight:700;color:#F2A541">С Must Play</h3>
+<ul style="font-size:32px;line-height:1.45;color:#E4E2DA">
+<li>Одна понятная оценка от 0 до 100 для каждой игры</li>
+<li>Пометка, если журналисты и игроки не согласны</li>
+<li>Список «обязательно сыграй», который обновляется сам</li>
+<li>Подбор игры по жанру, платформе и свободному времени</li>
+</ul>
+</div>
+</div>
+<aside>Проблема — выбор. Решение — один рейтинг, честное сравнение мнений и подбор.</aside>
+</section>
+
+<section id="journey" data-transition="fade" style="background:#14161F;color:#F3F1EA;font-family:'Rubik', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:56px">
+<h2 style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;line-height:1.1">Как этим пользуется игрок</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:32px">
+<div style="display:flex;flex-direction:column;gap:16px;background:#1F2230;padding:40px;border-radius:16px">
+<p style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;color:#F2A541">1</p>
+<h3 style="font-size:34px;font-weight:700">Рейтинг</h3>
+<p style="font-size:28px;line-height:1.4;color:#D4D6DE">Смотрит лучшие игры всех времён, фильтрует по жанру и годам</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px;background:#1F2230;padding:40px;border-radius:16px">
+<p style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;color:#F2A541">2</p>
+<h3 style="font-size:34px;font-weight:700">Карточка</h3>
+<p style="font-size:28px;line-height:1.4;color:#D4D6DE">Видит оценку журналистов, оценку игроков и их расхождение</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px;background:#1F2230;padding:40px;border-radius:16px">
+<p style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;color:#F2A541">3</p>
+<h3 style="font-size:34px;font-weight:700">Подбор</h3>
+<p style="font-size:28px;line-height:1.4;color:#D4D6DE">«Хочу кооператив на Mac на 10 часов» — получает список</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px;background:#1F2230;padding:40px;border-radius:16px">
+<p style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;color:#F2A541">4</p>
+<h3 style="font-size:34px;font-weight:700">Must play</h3>
+<p style="font-size:28px;line-height:1.4;color:#D4D6DE">Видит, какие игры вошли в список и выбыли после последнего обновления</p>
+</div>
+</div>
+<aside>Сценарий пользователя от входа до выбора игры.</aside>
+</section>
+
+<section id="data" data-transition="fade" style="background:#F3F1EA;color:#14161F;font-family:'Rubik', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:56px">
+<h2 style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;line-height:1.1">Откуда данные: открытый датасет Steam</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:32px">
+<div style="display:flex;flex-direction:column;gap:12px;background:#FBFAF6;padding:40px;border:1px solid #DDD8CC;border-radius:16px">
+<p style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;color:#B4651A">141 605</p>
+<p style="font-size:28px;color:#3C4150">игр: цена, жанры, платформы, языки</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#FBFAF6;padding:40px;border:1px solid #DDD8CC;border-radius:16px">
+<p style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;color:#B4651A">56 763</p>
+<p style="font-size:28px;color:#3C4150">игры, за которые проголосовали 10+ игроков</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#FBFAF6;padding:40px;border:1px solid #DDD8CC;border-radius:16px">
+<p style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;color:#B4651A">28 634</p>
+<p style="font-size:28px;color:#3C4150">цитаты журналистов о 12 071 игре</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#FBFAF6;padding:40px;border:1px solid #DDD8CC;border-radius:16px">
+<p style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;color:#B4651A">4 736</p>
+<p style="font-size:28px;color:#3C4150">игр, где в цитате есть оценка числом</p>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px">
+<h3 style="font-size:36px;font-weight:700">Данные «грязные» — их надо чистить</h3>
+<ul style="font-size:30px;line-height:1.45;color:#3C4150">
+<li>Оценки в пяти разных шкалах — приводим к одной, от 0 до 100</li>
+<li>Одно издание записано по-разному: «Rock Paper Shotgun» и «Rock, Paper, Shotgun»</li>
+<li>Жанры и языки лежат списком в одной ячейке — раскладываем по таблицам</li>
+</ul>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1600px;font-size:24px;color:#6A6F7C">Источник: steam_games.csv (970 МБ) и steam_games_reviews.csv, подсчёт по полным файлам</p>
+<aside>Все цифры посчитаны по полным файлам.</aside>
+</section>
+
+<section id="system" data-transition="fade" style="background:#F3F1EA;color:#14161F;font-family:'Rubik', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:48px">
+<h2 style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;line-height:1.1">Что хранит и что считает система</h2>
+<div style="display:flex;gap:48px">
+<div style="flex:2;display:flex;flex-direction:column;gap:20px;background:#FBFAF6;padding:40px;border:1px solid #DDD8CC;border-radius:16px">
+<h3 style="font-size:36px;font-weight:700;color:#B4651A">База данных</h3>
+<ul style="font-size:28px;line-height:1.5;color:#3C4150">
+<li>Игры и жанры</li>
+<li>Издания и их обзоры</li>
+<li>Обновления рейтинга</li>
+<li>История оценок игр</li>
+<li>Список must play</li>
+</ul>
+</div>
+<div style="flex:3;display:flex;flex-direction:column;gap:20px;background:#14161F;padding:40px;border-radius:16px">
+<h3 style="font-size:36px;font-weight:700;color:#F2A541">Правила</h3>
+<ol style="font-size:28px;line-height:1.5;color:#E4E2DA">
+<li>Итоговая оценка = журналисты + игроки. 3 голоса «за» из 3 не обгонят 9 000 из 10 000</li>
+<li>В рейтинг попадает игра, у которой достаточно отзывов</li>
+<li>Разница мнений больше 20 пунктов — пометка «спорная»</li>
+<li>Must play: вход, удержание и выбывание по оценке</li>
+<li>Пересчёт атомарный: всё или ничего</li>
+</ol>
+</div>
+</div>
+<aside>Порог 20 пунктов — пример, подберём по данным.</aside>
+</section>
+
+<section id="update" data-transition="fade" style="background:#F3F1EA;color:#14161F;font-family:'Rubik', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px">
+<h2 style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;line-height:1.1">Как обновляется рейтинг</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:24px">
+<div style="display:flex;flex-direction:column;gap:16px;background:#FBFAF6;padding:32px;border:1px solid #DDD8CC;border-radius:16px">
+<p style="font-family:'Oswald', Arial, sans-serif;font-size:64px;font-weight:600;color:#B4651A">1</p>
+<h3 style="font-size:32px;font-weight:700">Новые данные</h3>
+<p style="font-size:26px;line-height:1.4;color:#3C4150">Свежая выгрузка Steam: новые игры, голоса, обзоры</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px;background:#FBFAF6;padding:32px;border:1px solid #DDD8CC;border-radius:16px">
+<p style="font-family:'Oswald', Arial, sans-serif;font-size:64px;font-weight:600;color:#B4651A">2</p>
+<h3 style="font-size:32px;font-weight:700">Проверка</h3>
+<p style="font-size:26px;line-height:1.4;color:#3C4150">Чистка, отброс битых строк, без дублей</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px;background:#FBFAF6;padding:32px;border:1px solid #DDD8CC;border-radius:16px">
+<p style="font-family:'Oswald', Arial, sans-serif;font-size:64px;font-weight:600;color:#B4651A">3</p>
+<h3 style="font-size:32px;font-weight:700">Пересчёт</h3>
+<p style="font-size:26px;line-height:1.4;color:#3C4150">Новые оценки всех игр — целиком или никак</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px;background:#FBFAF6;padding:32px;border:1px solid #DDD8CC;border-radius:16px">
+<p style="font-family:'Oswald', Arial, sans-serif;font-size:64px;font-weight:600;color:#B4651A">4</p>
+<h3 style="font-size:32px;font-weight:700">Must play</h3>
+<p style="font-size:26px;line-height:1.4;color:#3C4150">Игра входит, остаётся или выбывает</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px;background:#14161F;padding:32px;border-radius:16px">
+<p style="font-family:'Oswald', Arial, sans-serif;font-size:64px;font-weight:600;color:#F2A541">5</p>
+<h3 style="font-size:32px;font-weight:700;color:#F3F1EA">История</h3>
+<p style="font-size:26px;line-height:1.4;color:#E4E2DA">Снимок рейтинга и отчёт: что изменилось</p>
+</div>
+</div>
+<ul style="font-size:30px;line-height:1.5;color:#3C4150">
+<li>Запуск — командой или по расписанию, например раз в неделю</li>
+<li>Если пересчёт упал, остаётся прошлая версия рейтинга</li>
+<li>По истории видно, как игра поднималась и падала со временем</li>
+</ul>
+<p style="position:absolute;left:128px;bottom:64px;width:1600px;font-size:24px;color:#6A6F7C">Пример запуска: python -m app.etl.import_data --source data/steam_games.csv</p>
+<aside>Шаг 3 — одна транзакция. Шаг 4 — смена статусов: кандидат, в списке, выбыла.</aside>
+</section>
+
+<section id="etl-ml" data-transition="fade" style="background:#14161F;color:#F3F1EA;font-family:'Rubik', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:48px">
+<h2 style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;line-height:1.1">Загрузка данных, отчёты и машинное обучение</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px">
+<div style="display:flex;flex-direction:column;gap:16px;background:#1F2230;padding:40px;border-radius:16px">
+<h3 style="font-size:36px;font-weight:700;color:#F2A541">Загрузка (ETL)</h3>
+<ul style="font-size:26px;line-height:1.5;color:#D4D6DE">
+<li>Скрипт читает CSV-файлы</li>
+<li>Чистит и проверяет строки</li>
+<li>Кладёт в базу данных</li>
+<li>Повторный запуск не плодит дубли</li>
+<li>Пишет отчёт: сколько загружено, сколько отброшено и почему</li>
+</ul>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px;background:#1F2230;padding:40px;border-radius:16px">
+<h3 style="font-size:36px;font-weight:700;color:#F2A541">Отчёты</h3>
+<ul style="font-size:26px;line-height:1.5;color:#D4D6DE">
+<li>Лучшие игры по жанрам и десятилетиям</li>
+<li>Игры, которые журналисты перехвалили или недооценили</li>
+<li>Самые строгие и самые щедрые издания</li>
+</ul>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px;background:#1F2230;padding:40px;border-radius:16px">
+<h3 style="font-size:36px;font-weight:700;color:#5BA4E6">Две ML-модели</h3>
+<ul style="font-size:26px;line-height:1.5;color:#D4D6DE">
+<li>Станет ли игра хитом — по цене, жанру, платформам</li>
+<li>Понравится ли игра журналистам — для игр без обзоров</li>
+<li>Сравниваю 3 алгоритма, оставляю лучший</li>
+<li>Модель можно загрузить и проверить через API</li>
+</ul>
+</div>
+</div>
+<aside>Метрика выбора модели — ROC-AUC. Эндпоинты: /upload-model, /predict, /predict-from-csv.</aside>
+</section>
+
+</div>
+<div id="counter"></div>
+<script>
+  const slides = [...document.querySelectorAll("#stage > section")];
+  const stage = document.getElementById("stage");
+  let current = 0;
+  function fit() {
+    const scale = Math.min(innerWidth / 1920, innerHeight / 1080);
+    stage.style.transform = `scale(${scale}) translate(-50%, -50%)`;
+  }
+  function show(i) {
+    current = Math.max(0, Math.min(slides.length - 1, i));
+    slides.forEach((s, n) => s.classList.toggle("active", n === current));
+    document.getElementById("counter").textContent = `${current + 1} / ${slides.length}`;
+    location.hash = current + 1;
+  }
+  addEventListener("resize", fit);
+  addEventListener("keydown", (e) => {
+    if (["ArrowRight", "PageDown", " "].includes(e.key)) show(current + 1);
+    if (["ArrowLeft", "PageUp"].includes(e.key)) show(current - 1);
+    if (e.key === "f") document.documentElement.requestFullscreen?.();
+  });
+  addEventListener("click", (e) => show(current + (e.clientX > innerWidth / 2 ? 1 : -1)));
+  fit();
+  show((parseInt(location.hash.slice(1), 10) || 1) - 1);
+</script>
+</body>
+</html>

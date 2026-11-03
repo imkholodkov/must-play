@@ -1,0 +1,21 @@
+<section id="rules" data-transition="fade" style="background:#F3F1EA;color:#14161F;font-family:'Rubik', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:40px">
+<h2 style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;line-height:1.1">Рейтинг и бизнес-правила</h2>
+<div style="display:flex;gap:40px">
+<div style="flex:3;display:flex;flex-direction:column;gap:16px;background:#FBFAF6;padding:40px;border:1px solid #DDD8CC;border-radius:16px">
+<ol style="font-size:28px;line-height:1.5;color:#3C4150">
+<li><b>Индекс</b> = 0,4 × пресса + 0,6 × игроки (нижняя граница Уилсона); пресса −7 пунктов за щедрость</li>
+<li><b>Допуск</b> в рейтинг — от 50 голосов</li>
+<li><b>Расхождение</b> прессы и игроков больше 20 пунктов — пометка</li>
+<li><b>Must play</b>: candidate → in_list → dropped, пороги 95 / 93</li>
+<li><b>Атомарный пересчёт</b>: всё или ничего, параллельный запуск — 409</li>
+</ol>
+</div>
+<div style="flex:2;display:flex;flex-direction:column;gap:16px;background:#14161F;padding:40px;border-radius:16px">
+<h3 style="font-size:34px;font-weight:700;color:#F2A541">Пример: Celeste</h3>
+<p style="font-size:28px;line-height:1.5;color:#E4E2DA">Игроки 97,4 · пресса 100 (2 обзора) → индекс 95,6 → в must play</p>
+<h3 style="font-size:34px;font-weight:700;color:#F2A541">Почему так</h3>
+<p style="font-size:28px;line-height:1.5;color:#E4E2DA">3 голоса «за» из 3 дают 44, а 9 000 из 10 000 — 89: мало голосов не выводит игру наверх</p>
+</div>
+</div>
+<aside>Пороги подобраны по распределению: 95 — около 97-го перцентиля. Поправка 7 пунктов — средняя разница прессы и игроков на одних и тех же играх.</aside>
+</section>
