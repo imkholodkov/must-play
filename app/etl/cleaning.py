@@ -15,8 +15,41 @@ from decimal import Decimal, InvalidOperation
 # Steam подставляет такие строки вместо локализованных названий категорий
 PLACEHOLDER_PREFIX = "#"
 AUDIO_FOOTNOTE = "languages with full audio support"
+AUDIO_FOOTNOTES = (AUDIO_FOOTNOTE, "idiomas con localización de audio")
 TAG_RE = re.compile(r"<[^>]+>|\[/?b\]")
 SPACES_RE = re.compile(r"\s+")
+PARENS_RE = re.compile(r"\s*\([^)]*\)")
+
+# Названия языков на других языках интерфейса Steam → английское название
+LANGUAGE_SYNONYMS = {
+    "anglais": "English",
+    "inglés": "English",
+    "英語": "English",
+    "français": "French",
+    "allemand": "German",
+    "espagnol - espagne": "Spanish - Spain",
+    "スペイン語 - スペイン": "Spanish - Spain",
+    "russe": "Russian",
+    "ロシア語": "Russian",
+    "polonais": "Polish",
+    "coréen": "Korean",
+    "japonais": "Japanese",
+    "日本語": "Japanese",
+    "ukrainien": "Ukrainian",
+    "portugais du brésil": "Portuguese - Brazil",
+    "chinois simplifié": "Simplified Chinese",
+    "chineză simplificată": "Simplified Chinese",
+    "中国語（簡体字）": "Simplified Chinese",
+    "chineză tradițională": "Traditional Chinese",
+}
+
+
+def unescape_all(value: str) -> str:
+    """Снять HTML-экранирование, в том числе многократное: '&amp;amp;lt;' → '<'."""
+    previous = None
+    while previous != value:
+        previous, value = value, html.unescape(value)
+    return value
 
 
 def is_blank(value: str | None) -> bool:
@@ -128,17 +161,24 @@ def parse_languages(value: str | None) -> list[str]:
     - '["English", "Polish"]' — JSON;
     - 'English, Japanese' — текст через запятую;
     - 'English<strong>*</strong><br><strong>*</strong>languages with full audio support' — текст с HTML.
-    HTML-строка встречается и как единственный элемент JSON-списка, поэтому каждый элемент чистится одинаково.
+    HTML-строка встречается и как единственный элемент JSON-списка, в том числе экранированная несколько раз,
+    поэтому каждый элемент чистится одинаково. Пометки в скобках «(full audio)» отбрасываются,
+    названия на других языках интерфейса сводятся к английским по LANGUAGE_SYNONYMS.
     """
     if is_blank(value):
         return []
     chunks = parse_list(value) if value.lstrip().startswith("[") else [value]
     languages = []
     for chunk in chunks:
-        text = chunk.split("<br>")[0] if AUDIO_FOOTNOTE in chunk else chunk
-        text = TAG_RE.sub("", text).replace("*", "").replace(AUDIO_FOOTNOTE, "")
-        languages.extend(re.split(r"[,\n]", text))
-    return dedupe(languages)
+        text = unescape_all(chunk)
+        if any(note in text for note in AUDIO_FOOTNOTES):
+            text = re.split(r"<br\s*/?>", text)[0]
+        text = TAG_RE.sub("", text).replace("*", "")
+        for note in AUDIO_FOOTNOTES:
+            text = text.replace(note, "")
+        text = PARENS_RE.sub("", text)
+        languages.extend(re.split(r"[,;\n]", text))
+    return dedupe([LANGUAGE_SYNONYMS.get(name.strip().casefold(), name) for name in languages])
 
 
 def positive_share(positive: int, negative: int) -> float | None:

@@ -62,6 +62,11 @@ def test_parse_list_unescapes_html_entities():
             ["English", "French"],
         ),
         ("", []),
+        ("Anglais, Russe, Français", ["English", "Russian", "French"]),
+        ('["English&amp;amp;lt;strong&amp;amp;gt;&amp;amp;lt;/strong&amp;amp;gt;", "German;"]', ["English", "German"]),
+        ("English (full audio), Traditional Chinese (text only)", ["English", "Traditional Chinese"]),
+        ("Inglésidiomas con localización de audio", ["English"]),
+        ("English, Anglais", ["English"]),
     ],
 )
 def test_parse_languages(raw, expected):
