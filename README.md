@@ -18,6 +18,8 @@
 | Отчёт о тестах (Allure) | https://imkholodkov.github.io/must-play/ |
 | Покрытие кода по файлам | https://imkholodkov.github.io/must-play/coverage/ |
 | Веб-интерфейс (после запуска) | http://localhost:8000/ui/ |
+| Анализ данных (EDA) | [ml/notebooks/eda.ipynb](ml/notebooks/eda.ipynb) |
+| Презентации | [идея](docs/presentation/idea.html), [защита](docs/presentation/defense.html) — открываются в браузере, листаются стрелками |
 | Swagger (после запуска) | http://localhost:8000/docs |
 
 ## Стек
@@ -47,6 +49,8 @@ docker compose exec app python -m app.etl.import_reviews       # обзоры п
 docker compose exec app python -m app.services.rating          # пересчёт рейтинга и must play
 docker compose exec app python -m app.services.recommendations # похожие игры (около 45 секунд)
 ```
+
+Сервис `scheduler` в compose пересчитывает рейтинг и похожие игры по расписанию из `RATING_CRON` (по умолчанию понедельник 03:00 UTC).
 
 Быстрая проверка без полного датасета — seed из выборки `data/sample/` (305 игр, 30 с обзорами прессы, около 5 секунд):
 
@@ -84,6 +88,7 @@ uvicorn app.main:app --reload
 | `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB` | учётные данные PostgreSQL в docker compose |
 | `DATABASE_URL` | строка подключения SQLAlchemy; в контейнере хост `db`, локально `localhost` |
 | `STEAM_GAMES_DRIVE_ID`, `STEAM_REVIEWS_DRIVE_ID` | ID файлов датасета на Google Drive |
+| `RATING_CRON` | расписание планового пересчёта рейтинга, cron в UTC |
 
 ## База данных
 
@@ -130,7 +135,7 @@ python -m app.etl.import_reviews --source data/steam_games_reviews.csv
 |---|---|
 | владельцы в двух форматах: «0 - 20000» и «0 .. 20,000» | разбор в диапазон min / max |
 | жанры и категории — списком строк или списком словарей `{"id","description"}`, теги — словарём «тег → голоса» | единый список имён без дублей и служебных заглушек `#category_…` |
-| языки — JSON, текст через запятую, HTML со звёздочками | список языков: 3 587 «разных» значений → 134 |
+| языки — JSON, текст через запятую, HTML со звёздочками | список языков: 3 587 «разных» значений → 103, названия на других языках сводятся по словарю синонимов |
 | `metacritic_score = 0` означает «нет оценки» | NULL вместо нуля |
 | оценки прессы в шкалах /5, /10, /20, /100, % | приведение к 0–100; шутки вроде 11/10 отбрасываются |
 | издание записано по-разному: «Rock, Paper, Shotgun» и «Rock Paper Shotgun» | общий ключ: 11 152 написания → 9 246 изданий |
