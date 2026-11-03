@@ -25,5 +25,13 @@ services:
       - ./data:/app/data
       - ./models:/app/models
 
+  scheduler:
+    build: .
+    command: python -m app.scheduler
+    env_file: .env
+    depends_on:
+      db:
+        condition: service_healthy
+
 volumes:
   pgdata:
