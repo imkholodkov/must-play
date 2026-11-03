@@ -10,6 +10,7 @@ class Settings(BaseSettings):
 
     app_name: str = "Must Play"
     database_url: str = "postgresql+psycopg://mustplay:change-me@localhost:5432/mustplay"
+    rating_cron: str = "0 3 * * 1"  # плановый пересчёт рейтинга: понедельник 03:00 UTC
 
 
 @lru_cache
