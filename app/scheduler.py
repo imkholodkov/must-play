@@ -32,6 +32,7 @@ def refresh() -> dict | None:
 
 def build_scheduler(cron: str) -> BlockingScheduler:
     scheduler = BlockingScheduler(timezone="UTC")
+    # max_instances=1: если пересчёт затянулся, следующий запуск на него не наложится
     scheduler.add_job(refresh, CronTrigger.from_crontab(cron, timezone="UTC"), id="refresh", max_instances=1)
     return scheduler
 

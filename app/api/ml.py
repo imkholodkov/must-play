@@ -85,6 +85,7 @@ def predict_from_csv(model: Annotated[ModelName, Form()], file: Annotated[Upload
         raise AppError("Файл не читается как CSV", str(exc)) from exc
     if frame.empty:
         raise AppError("CSV пустой")
+    # target убираем из признаков, а потом возвращаем в ответ рядом с прогнозом
     target = frame.pop(TARGET) if TARGET in frame else None
     result = registry.predict(model, frame)
     roc_auc = None
@@ -92,6 +93,7 @@ def predict_from_csv(model: Annotated[ModelName, Form()], file: Annotated[Upload
         y = pd.to_numeric(target, errors="coerce")
         if y.isna().any() or set(y.unique()) - {0, 1}:
             raise AppError("Колонка target должна содержать только 0 и 1")
+        # ROC-AUC не считается, если в target только один класс
         if y.nunique() == 2:
             roc_auc = round(float(roc_auc_score(y, result[f"{model}_probability"])), 4)
         result[TARGET] = y.astype(int)

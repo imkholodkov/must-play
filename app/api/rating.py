@@ -55,6 +55,7 @@ def must_play(
         .join(GameScore, GameScore.app_id == Game.app_id)
         .where(MustPlayEntry.status == "in_list")
     )
+    # список небольшой, около тысячи игр, поэтому total просто считаем по app_id
     total = len(db.scalars(base.with_only_columns(Game.app_id)).all())
     items = db.scalars(
         base.options(selectinload(Game.genres), selectinload(Game.score))

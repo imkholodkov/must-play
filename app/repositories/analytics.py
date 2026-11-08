@@ -41,6 +41,7 @@ def releases_by_year(session: Session, year_from: int, year_to: int) -> list[dic
             YEAR,
             func.count(),
             func.avg(case((Game.is_free, 100.0), else_=0.0)),
+            # цену усредняем только по платным, иначе бесплатные тянут среднее к нулю
             func.avg(case((Game.is_free.is_(False), Game.price))),
             func.avg(case((GameScore.is_eligible, GameScore.index_score))),
         )
@@ -80,6 +81,7 @@ def divergence_top(session: Session, kind: str, limit: int) -> list[dict]:
 
 def outlets_strictness(session: Session, min_reviews: int, limit: int, strict: bool) -> list[dict]:
     """Строгость изданий: средняя оценка издания минус средняя оценка всех изданий."""
+    # средняя по всем изданиям — точка отсчёта для «строгий / щедрый»
     overall = session.scalar(select(func.avg(CriticReview.score)))
     if overall is None:
         return []

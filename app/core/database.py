@@ -23,6 +23,7 @@ class Base(DeclarativeBase):
     metadata = MetaData(naming_convention=NAMING_CONVENTION)
 
 
+# pool_pre_ping проверяет соединение перед запросом — переживёт перезапуск контейнера с БД
 engine = create_engine(get_settings().database_url, pool_pre_ping=True)
 SessionLocal = sessionmaker(bind=engine, autoflush=False, expire_on_commit=False)
 
@@ -36,4 +37,5 @@ def get_db() -> Iterator[Session]:
         session.close()
 
 
+# короткая запись для эндпоинтов: db: DbSession вместо Depends(get_db) в каждом
 DbSession = Annotated[Session, Depends(get_db)]

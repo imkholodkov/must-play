@@ -69,8 +69,10 @@ def rank_similar(
     app_ids = [a for a in quality if tokens.get(a)]
     if len(app_ids) < 2:
         return {}
+    # TF-IDF снижает вес частых признаков: общий «Indie» значит меньше, чем редкий «Metroidvania»
     vectorizer = TfidfVectorizer(analyzer=lambda doc: doc)  # документ уже разбит на токены
     matrix = vectorizer.fit_transform([tokens[a] for a in app_ids])
+    # кандидатов берём с запасом, чтобы после учёта качества было из чего выбрать
     neighbours = NearestNeighbors(n_neighbors=min(CANDIDATES + 1, len(app_ids)), metric="cosine").fit(matrix)
     distances, indices = neighbours.kneighbors(matrix)
 
@@ -144,6 +146,7 @@ def recommend(session: Session, prefs: Preferences, limit: int) -> list[Game]:
         stmt = stmt.where(getattr(Game, prefs.platform).is_(True))
     if prefs.language:
         stmt = stmt.where(Game.languages.any(func.lower(Language.name) == prefs.language.lower()))
+    # бесплатные игры проходят любой лимит цены
     if prefs.max_price is not None:
         stmt = stmt.where((Game.price <= prefs.max_price) | Game.is_free)
     if prefs.exclude:

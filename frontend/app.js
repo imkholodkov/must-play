@@ -8,6 +8,7 @@ const PAGE_SIZE = 20;
 
 // ---------- общие помощники ----------
 
+// всё, что пришло из API, экранируем перед вставкой в HTML
 function esc(value) {
   return String(value ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 }
@@ -52,6 +53,7 @@ async function api(path, options = {}) {
   } catch {
     throw new Error("Сервер недоступен");
   }
+  // у ответа 204 нет тела, json() на нём упадёт
   if (response.status === 204) return null;
   const body = await response.json().catch(() => null);
   if (!response.ok) throw new Error(describeError(body, response.status));
@@ -159,6 +161,7 @@ async function mustPlayPage() {
 }
 
 async function gamePage(id) {
+  // карточку и похожие игры грузим параллельно
   const [game, similar] = await Promise.all([api(`/games/${id}`), api(`/games/${id}/similar`)]);
   const s = game.score || {};
   const chips = (items) => items.map((x) => `<span class="badge">${esc(x.name)}</span>`).join(" ") || '<span class="muted">—</span>';
@@ -333,6 +336,7 @@ async function editPage(id) {
       genres: d.genres.split(",").map((s) => s.trim()).filter(Boolean),
     };
     try {
+      // одна форма на создание и правку: есть игра — PATCH, нет — POST
       const saved = game
         ? await api(`/games/${id}`, { method: "PATCH", body })
         : await api("/games", { method: "POST", body: { ...body, app_id: Number(d.app_id) || d.app_id } });

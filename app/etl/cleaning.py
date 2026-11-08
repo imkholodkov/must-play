@@ -98,6 +98,7 @@ def parse_owners(value: str | None) -> tuple[int, int] | None:
     """Диапазон владельцев в двух форматах (лаба 4): '0 - 20000' и '0 .. 20,000' → (0, 20000)."""
     if is_blank(value):
         return None
+    # «0 .. 20,000» превращаем в «0 - 20000», дальше оба формата разбираются одинаково
     parts = value.replace(",", "").replace("..", "-").split("-")
     if len(parts) != 2:
         return None
@@ -125,6 +126,7 @@ def dedupe(items: list[str]) -> list[str]:
     result = []
     for item in items:
         name = normalize_name(item)
+        # сравниваем без регистра: «Action» и «action» — один жанр
         key = name.casefold()
         if name and key not in seen and not name.startswith(PLACEHOLDER_PREFIX):
             seen.add(key)
@@ -146,6 +148,7 @@ def parse_list(value: str | None) -> list[str]:
         data = json.loads(value)
     except ValueError:
         return []
+    # теги иногда приходят словарём «тег → число голосов», нам нужны только ключи
     if isinstance(data, dict):
         items = list(data)
     elif isinstance(data, list):

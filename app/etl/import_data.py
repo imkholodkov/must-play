@@ -34,14 +34,17 @@ def read_rows(path: Path) -> Iterator[dict[str, str]]:
 def run_import(session: Session, source: Path, batch_size: int = 1000) -> EtlRun:
     """Импортировать каталог в одной транзакции и записать отчёт в etl_runs."""
     run = EtlRun(source=str(source), status="running", rejection_reasons={})
+    # запись о запуске коммитим сразу, чтобы она осталась, даже если импорт упадёт
     session.add(run)
     session.commit()
 
     reasons: Counter[str] = Counter()
+    # app_id, которые уже встречались в файле: повторная строка — дубль
     seen: set[int] = set()
     batch: list[GameRecord] = []
     loader = Loader(session)
 
+    # пишем пачками: по одной строке на 141 тысячу игр было бы слишком долго
     def flush() -> None:
         loaded, updated = loader.load_batch(batch)
         run.rows_loaded += loaded

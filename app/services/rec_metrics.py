@@ -86,11 +86,13 @@ def evaluate(session: Session) -> dict:
     catalog = [a for a in quality if tokens.get(a)]
 
     # 1–2. Модель без тегов против базовых линий, проверка по скрытым тегам
+    # модель для проверки не видит теги — по ним и считаем попадания
     without_tags = {a: [t for t in toks if not t.startswith("t:")] for a, toks in tokens.items()}
     holdout = {a: [o for o, _ in sims] for a, sims in rank_similar(without_tags, quality).items()}
     votes = dict(
         session.execute(select(Game.app_id, Game.positive + Game.negative).where(Game.app_id.in_(catalog))).all()
     )
+    # «популярные» — один и тот же топ для всех, как на витрине магазина
     popular = sorted(catalog, key=lambda a: votes.get(a, 0), reverse=True)[: TOP_K + 1]
     baselines = {
         "model_without_tags": lambda a: holdout.get(a, []),

@@ -96,6 +96,7 @@ def register_error_handlers(app: FastAPI) -> None:
 
     @app.exception_handler(IntegrityError)
     async def integrity_error(_: Request, exc: IntegrityError) -> JSONResponse:
+        # сюда попадают нарушения UNIQUE и CHECK, которые не поймала валидация
         return JSONResponse(
             error_body("conflict", "Данные нарушают ограничение целостности БД", str(exc.orig).splitlines()[0]),
             status_code=status.HTTP_409_CONFLICT,

@@ -66,11 +66,14 @@ def list_games(
     session: Session, filters: GameFilters, sort: SortField, desc: bool, limit: int, offset: int
 ) -> tuple[list[Game], int]:
     base = _apply_filters(select(Game).outerjoin(GameScore, GameScore.app_id == Game.app_id), filters)
+    # total считаем до limit/offset, чтобы интерфейс мог нарисовать пагинацию
     total = session.scalar(select(func.count()).select_from(base.subquery()))
     column = SORT_COLUMNS[sort]
+    # игры без оценки уходят в конец при любом направлении сортировки
     order = column.desc().nulls_last() if desc else column.asc().nulls_last()
     items = session.scalars(
         base.options(selectinload(Game.genres), selectinload(Game.score))
+        # app_id вторым ключом, чтобы при равных значениях страницы не перемешивались
         .order_by(order, Game.app_id)
         .limit(limit)
         .offset(offset)
@@ -100,6 +103,7 @@ def genres_by_names(session: Session, names: list[str]) -> list[Genre]:
     """Найти жанры по именам, недостающие создать."""
     existing = {g.name.lower(): g for g in session.scalars(select(Genre).where(Genre.name.in_(names)))}
     result = []
+    # dict.fromkeys убирает повторы и сохраняет порядок жанров из запроса
     for name in dict.fromkeys(n.strip() for n in names if n.strip()):
         genre = existing.get(name.lower())
         if genre is None:

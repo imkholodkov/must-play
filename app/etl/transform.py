@@ -50,6 +50,7 @@ def transform_row(row: dict[str, str]) -> GameRecord:
         "name": name[:500],
         "release_date": cleaning.parse_date(row.get("release_date")),
         "price": price,
+        # бесплатной считаем и игру с ценой 0: статус в выгрузке заполнен не везде
         "is_free": row.get("price_status") == "free" or price == 0,
         "owners_min": owners[0] if owners else None,
         "owners_max": owners[1] if owners else None,
@@ -66,5 +67,6 @@ def transform_row(row: dict[str, str]) -> GameRecord:
         "short_description": (row.get("short_description") or "").strip() or None,
         "header_image": (row.get("header_image") or "").strip()[:500] or None,
     }
+    # жанры, теги и прочие списки отдельно — загрузчик разложит их по справочникам
     lists = {key: parse(row.get(column)) for key, (column, parse) in LIST_FIELDS.items()}
     return GameRecord(game=game, lists=lists)

@@ -29,6 +29,7 @@ def _chunks(rows: list[dict]):
 
 def recalculate(session: Session) -> RatingRun:
     """Пересчитать рейтинг всех игр в одной транзакции и вернуть запись о запуске."""
+    # два пересчёта одновременно перепишут оценки вперемешку — второй не пускаем
     if session.scalar(select(RatingRun.id).where(RatingRun.status == "running").with_for_update()):
         raise RatingInProgressError("пересчёт рейтинга уже выполняется")
     run = RatingRun(status="running")
@@ -36,6 +37,7 @@ def recalculate(session: Session) -> RatingRun:
     session.commit()
 
     try:
+        # средняя оценка прессы по каждой игре одним запросом, без обхода обзоров в Python
         critic = dict(
             (app_id, (avg, cnt))
             for app_id, avg, cnt in session.execute(
@@ -62,10 +64,12 @@ def recalculate(session: Session) -> RatingRun:
                     "divergence": s.divergence,
                 }
             )
+            # историю храним только для допущенных игр — остальных в рейтинге всё равно нет
             if s.is_eligible and s.index_score is not None:
                 history.append({"run_id": run.id, "app_id": app_id, "index_score": s.index_score})
             current = statuses.get(app_id)
             new = next_must_play_status(current, s.index_score, s.is_eligible)
+            # пишем только смену статуса, чтобы changed_at показывал реальную дату перехода
             if new is not None and new != current:
                 must_play.append({"app_id": app_id, "status": new, "run_id": run.id})
 
@@ -89,6 +93,7 @@ def recalculate(session: Session) -> RatingRun:
         run.finished_at = datetime.now(UTC)
         session.commit()
     except BaseException:
+        # при любой ошибке, в том числе Ctrl+C, откатываем всё и помечаем запуск как failed
         session.rollback()
         run = session.merge(run)
         run.status = "failed"

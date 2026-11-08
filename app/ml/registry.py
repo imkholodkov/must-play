@@ -23,6 +23,7 @@ class ModelRegistry:
         self._models: dict[str, object] = {}
 
     def get(self, name: str):
+        # модель читаем с диска один раз и дальше держим в памяти
         if name not in self._models:
             path = self.models_dir / f"{name}.pkl"
             if not path.exists():

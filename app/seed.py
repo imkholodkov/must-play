@@ -26,6 +26,7 @@ def seed(session: Session, games: Path = GAMES_SAMPLE, reviews: Path = REVIEWS_S
     catalog = import_data.run_import(session, games)
     press = import_reviews.run_import(session, reviews)
     rating.recalculate(session)
+    # второй пересчёт нужен, чтобы кандидаты успели перейти в must play
     last_run = rating.recalculate(session)
     similar = recommendations.build_similarities(session)
     return {

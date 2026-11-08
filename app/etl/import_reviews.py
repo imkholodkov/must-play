@@ -87,12 +87,14 @@ def run_import(session: Session, source: Path) -> EtlRun:
     try:
         by_game = read_reviews(source, reasons)
         run.rows_read = len(by_game) + sum(reasons.values())
+        # обзоры на игры, которых нет в каталоге, грузить некуда — не пустит внешний ключ
         known = set(session.scalars(select(Game.app_id).where(Game.app_id.in_(list(by_game)))))
         for app_id in by_game.keys() - known:
             reasons["unknown_game"] += 1
             del by_game[app_id]
 
         outlet_ids = ensure_outlets(session, by_game)
+        # нужно только для отчёта: у скольких игр обзоры уже были до этого запуска
         already = set(session.scalars(select(CriticReview.app_id).distinct()))
         app_ids = list(by_game)
         for start in range(0, len(app_ids), BATCH_SIZE):

@@ -27,6 +27,7 @@ SOURCES = {
 def download(file_id: str, target: Path) -> None:
     """Скачать файл с Google Drive потоково, без загрузки в память целиком."""
     url = DRIVE_URL.format(file_id=file_id)
+    # качаем во временный файл: если загрузка оборвётся, в data/ не останется половины CSV
     tmp = target.with_suffix(target.suffix + ".part")
     with urllib.request.urlopen(url) as response, tmp.open("wb") as out:
         if "text/html" in response.headers.get("Content-Type", ""):

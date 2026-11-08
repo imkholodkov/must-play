@@ -29,9 +29,11 @@ class Loader:
     def load_batch(self, records: list[GameRecord]) -> tuple[int, int]:
         """Записать пачку игр со связями. Возвращает (новых, обновлённых)."""
         app_ids = [r.game["app_id"] for r in records]
+        # узнаём заранее, какие игры уже есть, иначе после upsert новые от старых не отличить
         existing = set(self.session.scalars(select(Game.app_id).where(Game.app_id.in_(app_ids))))
 
         stmt = insert(Game).values([r.game for r in records])
+        # при конфликте по app_id обновляем все поля, кроме самого ключа
         update_cols = {c: stmt.excluded[c] for c in records[0].game if c != "app_id"}
         self.session.execute(stmt.on_conflict_do_update(index_elements=["app_id"], set_=update_cols))
 
@@ -41,6 +43,7 @@ class Loader:
 
     def _replace_links(self, key, model, link: Table, column: str, records, app_ids) -> None:
         limit = NAME_LIMITS[key]
+        # режем по длине колонки, иначе одно длинное имя разработчика уронит всю пачку
         names = {name[:limit] for r in records for name in r.lists[key]}
         ids = self._ensure_names(key, model, names)
         # Связи игры перезаписываются целиком: повторный импорт не плодит дубли и убирает устаревшие

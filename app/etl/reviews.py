@@ -40,6 +40,7 @@ def normalize_score(raw: str) -> int | None:
             value, scale = (float(p) for p in text.split("/"))
         else:
             value = float(text.rstrip("%"))
+            # число без шкалы: 7.4 почти наверняка из 10, а 80 — из 100
             scale = 100.0 if text.endswith("%") or value > 10 else 10.0
     except ValueError:
         return None
@@ -52,6 +53,7 @@ def normalize_score(raw: str) -> int | None:
 def outlet_key(name: str) -> str:
     """Ключ издания для поиска дублей: 'Rock, Paper, Shotgun' и 'Rock Paper Shotgun' совпадают."""
     key = re.sub(r"[^\w]+", "", html.unescape(name).casefold())
+    # «The Escapist» и «Escapist» — одно и то же издание
     return key.removeprefix("the")
 
 

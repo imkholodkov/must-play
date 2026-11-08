@@ -66,6 +66,7 @@ class SteamFeatures(BaseEstimator, TransformerMixin):
         out = pd.DataFrame(index=X.index)
         out["price"] = np.log1p(price)
         out["is_free"] = ((col("price_status") == "free") | (price == 0)).astype(int)
+        # пустую дату заполняем серединой датасета, чтобы не выбрасывать строку
         out["release_year"] = dates.dt.year.fillna(2018)
         out["release_month"] = dates.dt.month.fillna(6)
         out["n_languages"] = col("supported_languages").map(lambda v: len(cleaning.parse_languages(v)))

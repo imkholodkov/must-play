@@ -65,6 +65,7 @@ def hit_dataset(games: pd.DataFrame) -> tuple[pd.DataFrame, pd.Series, dict]:
     votes = votes.loc[games.index]
     wilson = [wilson_lower_bound(p, n) for p, n in zip(votes["positive"], votes["negative"], strict=True)]
     wilson = pd.Series(wilson, index=games.index)
+    # «хит» — верхние 10% по оценке игроков среди игр с 10+ голосами
     threshold = float(wilson.quantile(HIT_QUANTILE))
     return games, (wilson >= threshold).astype(int), {"min_votes": MIN_VOTES_HIT, "wilson_threshold": threshold}
 
@@ -94,6 +95,7 @@ def candidates() -> dict[str, Pipeline]:
 
 
 def train_target(name: str, X: pd.DataFrame, y: pd.Series, info: dict, out_dir: Path) -> dict:
+    # stratify держит одинаковую долю хитов в обучающей и тестовой выборках
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=RANDOM_STATE)
     results = {}
     best_name, best_auc, best_pipe = None, -1.0, None

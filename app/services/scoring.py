@@ -34,6 +34,7 @@ def wilson_lower_bound(positive: int, negative: int, z: float = Z_95) -> float |
     if n == 0:
         return None
     p = positive / n
+    # формула Уилсона: чем меньше голосов, тем сильнее занижаем долю положительных
     centre = p + z * z / (2 * n)
     margin = z * math.sqrt((p * (1 - p) + z * z / (4 * n)) / n)
     return round((centre - margin) / (1 + z * z / n) * 100, 2)
@@ -66,6 +67,7 @@ def score_game(positive: int, negative: int, critic_avg: float | None, critic_co
     else:
         index = round(CRITIC_WEIGHT * adjusted + PLAYER_WEIGHT * player, 2)
 
+    # с прессой сравниваем простую долю положительных, а не Уилсона: так расхождение проще объяснить
     divergence = None
     share = positive / (positive + negative) * 100 if positive + negative else None
     if adjusted is not None and share is not None and eligible and abs(adjusted - share) > DIVERGENCE_POINTS:
@@ -86,6 +88,7 @@ def next_must_play_status(current: str | None, index: float | None, eligible: bo
     above_out = eligible and index is not None and index >= MUST_PLAY_OUT
     if current in (None, DROPPED):
         return CANDIDATE if above_in else current
+    # кандидату нужен второй пересчёт подряд выше порога выхода, только тогда он попадает в список
     if current == CANDIDATE:
         return IN_LIST if above_out else DROPPED
     return IN_LIST if above_out else DROPPED
