@@ -1,13 +1,13 @@
 {
-  "games_evaluated": 30337,
+  "games_evaluated": 29791,
   "tag_precision_at_10": {
-    "model_without_tags": 0.8014,
-    "random": 0.4473,
-    "popular": 0.5821
+    "model_without_tags": 0.7946,
+    "random": 0.455,
+    "popular": 0.5865
   },
-  "lift_over_random": 1.8,
-  "avg_index_recommended": 80.94,
-  "avg_index_catalog": 72.95,
-  "catalog_coverage": 0.8891,
-  "intra_list_diversity": 0.4616
+  "lift_over_random": 1.7,
+  "avg_index_recommended": 79.42,
+  "avg_index_catalog": 79.12,
+  "catalog_coverage": 0.9475,
+  "intra_list_diversity": 0.4517
 }

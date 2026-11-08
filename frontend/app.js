@@ -115,7 +115,7 @@ async function genreOptions(selected = "") {
 
 async function ratingPage() {
   view.innerHTML = `<h1>Рейтинг всех времён</h1>
-    <p class="muted">Индекс = 0,4 × пресса (с поправкой на щедрость) + 0,6 × игроки (нижняя граница Уилсона). В рейтинге игры с 50+ голосами.</p>
+    <p class="muted">Индекс = 0,4 × пресса + 0,6 × игроки. Оценка игроков учитывает, сколько людей игру знают: 99% у тысячи фанатов не обгонят 96% у миллиона. В рейтинге — игры с 50+ голосами, без программ и дублей.</p>
     <form class="filters" id="f">
       <label>Жанр <select name="genre">${await genreOptions()}</select></label>
       <label>Десятилетие <select name="decade"><option value="">Все</option>${[1990, 2000, 2010, 2020].map((d) => `<option value="${d}">${d}-е</option>`).join("")}</select></label>
@@ -149,7 +149,7 @@ async function ratingPage() {
 
 async function mustPlayPage() {
   view.innerHTML = `<h1>Must play</h1>
-    <p class="muted">Игра попадает в список, если индекс два пересчёта подряд держится высоко: вход от 95, выход ниже 93.</p>
+    <p class="muted">Игры, которые знают многие (10 000+ голосов) и чей индекс два пересчёта подряд держится высоко: вход от 93, выход ниже 92.</p>
     <div id="list"></div>`;
   const load = async (offset = 0) => {
     const page = await api(`/must-play?${query({ limit: PAGE_SIZE, offset })}`);
@@ -177,7 +177,7 @@ async function gamePage(id) {
       </div></div>
     <div class="scores">
       <div class="score"><span class="muted">Индекс</span><b>${fmt(s.index_score)}</b>${s.is_eligible ? "" : '<span class="muted">мало голосов</span>'}</div>
-      <div class="score"><span class="muted">Игроки (Уилсон)</span><b>${fmt(s.player_score)}</b><span class="muted">${game.positive} 👍 / ${game.negative} 👎</span></div>
+      <div class="score"><span class="muted">Игроки</span><b>${fmt(s.player_score)}</b><span class="muted">${game.positive} 👍 / ${game.negative} 👎</span></div>
       <div class="score"><span class="muted">Пресса</span><b>${fmt(s.critic_score, 0)}</b><span class="muted">обзоров с оценкой: ${s.critic_reviews_count ?? 0}</span></div>
     </div>
     <h2>Жанры и теги</h2><p class="chips">${chips(game.genres)}</p><p class="chips">${chips(game.tags.slice(0, 15))}</p>

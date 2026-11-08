@@ -42,11 +42,11 @@
 <p style="font-size:28px;color:#3C4150">обзоров прессы разобрано</p>
 </div>
 <div style="display:flex;flex-direction:column;gap:12px;background:#FBFAF6;padding:40px;border:1px solid #DDD8CC;border-radius:16px">
-<p style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;color:#B4651A">30 690</p>
+<p style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;color:#B4651A">30 142</p>
 <p style="font-size:28px;color:#3C4150">игр допущено в рейтинг</p>
 </div>
 <div style="display:flex;flex-direction:column;gap:12px;background:#FBFAF6;padding:40px;border:1px solid #DDD8CC;border-radius:16px">
-<p style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;color:#B4651A">1 073</p>
+<p style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;color:#B4651A">106</p>
 <p style="font-size:28px;color:#3C4150">игры в must play</p>
 </div>
 </div>
@@ -96,21 +96,21 @@
 <div style="display:flex;gap:40px">
 <div style="flex:3;display:flex;flex-direction:column;gap:16px;background:#FBFAF6;padding:40px;border:1px solid #DDD8CC;border-radius:16px">
 <ol style="font-size:28px;line-height:1.5;color:#3C4150">
-<li><b>Индекс</b> = 0,4 × пресса + 0,6 × игроки (нижняя граница Уилсона); пресса −7 пунктов за щедрость</li>
-<li><b>Допуск</b> в рейтинг — от 50 голосов</li>
-<li><b>Расхождение</b> прессы и игроков больше 20 пунктов — пометка</li>
-<li><b>Must play</b>: candidate → in_list → dropped, пороги 95 / 93</li>
+<li><b>Индекс</b> = 0,4 × пресса + 0,6 × игроки (байесовская оценка, как в IMDb Top 250)</li>
+<li><b>Допуск</b>: от 50 голосов, только игры, без дублей</li>
+<li><b>Расхождение</b> больше 20 пунктов (пресса −7 за щедрость) — пометка</li>
+<li><b>Must play</b>: 10 000+ голосов, candidate → in_list → dropped, пороги 93 / 92</li>
 <li><b>Атомарный пересчёт</b>: всё или ничего, параллельный запуск — 409</li>
 </ol>
 </div>
 <div style="flex:2;display:flex;flex-direction:column;gap:16px;background:#14161F;padding:40px;border-radius:16px">
-<h3 style="font-size:34px;font-weight:700;color:#F2A541">Пример: Celeste</h3>
-<p style="font-size:28px;line-height:1.5;color:#E4E2DA">Игроки 97,4 · пресса 100 (2 обзора) → индекс 95,6 → в must play</p>
+<h3 style="font-size:34px;font-weight:700;color:#F2A541">Пример: The Witcher 3</h3>
+<p style="font-size:28px;line-height:1.5;color:#E4E2DA">Игроки 95,7 · пресса 97 → индекс 96,2 → 21-е место, в must play</p>
 <h3 style="font-size:34px;font-weight:700;color:#F2A541">Почему так</h3>
-<p style="font-size:28px;line-height:1.5;color:#E4E2DA">3 голоса «за» из 3 дают 44, а 9 000 из 10 000 — 89: мало голосов не выводит игру наверх</p>
+<p style="font-size:28px;line-height:1.5;color:#E4E2DA">Пока голосов меньше 20 000, оценка тянется к средней: 99% у тысячи фанатов не обгоняют 96% у 835 тысяч</p>
 </div>
 </div>
-<aside>Пороги подобраны по распределению: 95 — около 97-го перцентиля. Поправка 7 пунктов — средняя разница прессы и игроков на одних и тех же играх.</aside>
+<aside>Раньше оценка игроков считалась по Уилсону, и наверху были нишевые игры, а Witcher 3 стоял на 1797-м месте. Байесовская оценка учитывает, сколько людей игру знают.</aside>
 </section>
 
 <section id="recs" data-transition="fade" style="background:#14161F;color:#F3F1EA;font-family:'Rubik', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:40px">
