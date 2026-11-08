@@ -1,0 +1,13 @@
+{
+  "games_evaluated": 30337,
+  "tag_precision_at_10": {
+    "model_without_tags": 0.8014,
+    "random": 0.4473,
+    "popular": 0.5821
+  },
+  "lift_over_random": 1.8,
+  "avg_index_recommended": 80.94,
+  "avg_index_catalog": 72.95,
+  "catalog_coverage": 0.8891,
+  "intra_list_diversity": 0.4616
+}
