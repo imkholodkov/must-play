@@ -48,7 +48,6 @@ def test_build_similarities(client, db_session):
 
     assert stats["games"] == 4
     assert db_session.scalar(select(func.count()).select_from(GameSimilarity)) == 8
-    assert stats["genre_precision"] > 0.5
 
 
 def test_similar_games_prefers_same_genre(client, db_session):
@@ -87,3 +86,13 @@ def test_recommend_rejects_unknown_mode(client):
 
     assert response.status_code == 422
     assert response.json()["error"]["code"] == "validation_error"
+
+
+def test_rec_metrics_evaluate(client, db_session):
+    from app.services.rec_metrics import evaluate
+
+    metrics = evaluate(db_session)
+
+    assert set(metrics["tag_precision_at_10"]) == {"model_without_tags", "random", "popular"}
+    assert 0 <= metrics["catalog_coverage"] <= 1
+    assert metrics["avg_index_catalog"] is not None

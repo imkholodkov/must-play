@@ -35,7 +35,7 @@ MODES = {
 }
 
 
-def _features(session: Session, app_ids: list[int]) -> dict[int, list[str]]:
+def game_tokens(session: Session, app_ids: list[int]) -> dict[int, list[str]]:
     """Признаки игры как список токенов: g:Action, t:Roguelike, c:Co-op."""
     tokens: dict[int, list[str]] = defaultdict(list)
     for prefix, link, model, column in (
@@ -51,48 +51,61 @@ def _features(session: Session, app_ids: list[int]) -> dict[int, list[str]]:
     return tokens
 
 
-def build_similarities(session: Session, top_k: int = TOP_K) -> dict:
-    """Пересчитать таблицу game_similarities для допущенных игр в одной транзакции."""
-    games = dict(
-        session.execute(
-            select(GameScore.app_id, GameScore.index_score).where(
-                GameScore.is_eligible, GameScore.index_score.is_not(None)
-            )
-        ).all()
+def eligible_quality(session: Session) -> dict[int, float]:
+    """Индекс качества допущенных в рейтинг игр: app_id → индекс."""
+    rows = session.execute(
+        select(GameScore.app_id, GameScore.index_score).where(GameScore.is_eligible, GameScore.index_score.is_not(None))
     )
-    tokens = _features(session, list(games))
-    app_ids = [a for a in games if tokens.get(a)]
-    if len(app_ids) < 2:
-        return {"games": 0, "pairs": 0, "genre_precision": None}
+    return dict(rows.all())
 
+
+def rank_similar(
+    tokens: dict[int, list[str]], quality: dict[int, float], top_k: int = TOP_K
+) -> dict[int, list[tuple[int, float]]]:
+    """Похожие игры для каждой игры: TF-IDF по токенам, косинус, пересортировка с учётом качества.
+
+    Возвращает app_id → [(похожая игра, косинусная близость)] длиной до top_k.
+    """
+    app_ids = [a for a in quality if tokens.get(a)]
+    if len(app_ids) < 2:
+        return {}
     vectorizer = TfidfVectorizer(analyzer=lambda doc: doc)  # документ уже разбит на токены
     matrix = vectorizer.fit_transform([tokens[a] for a in app_ids])
     neighbours = NearestNeighbors(n_neighbors=min(CANDIDATES + 1, len(app_ids)), metric="cosine").fit(matrix)
     distances, indices = neighbours.kneighbors(matrix)
 
-    rows, hits, total = [], 0, 0
+    result = {}
     for row, app_id in enumerate(app_ids):
-        genres = {t for t in tokens[app_id] if t.startswith("g:")}
         scored = []
         for dist, idx in zip(distances[row], indices[row], strict=True):
             other = app_ids[idx]
-            if other == app_id:
-                continue
-            similarity = 1 - dist
-            rank_score = SIMILARITY_WEIGHT * similarity + QUALITY_WEIGHT * games[other] / 100
-            scored.append((rank_score, other, similarity))
+            if other != app_id:
+                similarity = 1 - dist
+                scored.append(
+                    (SIMILARITY_WEIGHT * similarity + QUALITY_WEIGHT * quality[other] / 100, other, similarity)
+                )
         scored.sort(reverse=True)
-        for rank, (_, other, similarity) in enumerate(scored[:top_k], start=1):
-            rows.append({"app_id": app_id, "similar_app_id": other, "rank": rank, "score": round(similarity, 4)})
-            total += 1
-            hits += bool(genres & {t for t in tokens[other] if t.startswith("g:")})
+        result[app_id] = [(other, similarity) for _, other, similarity in scored[:top_k]]
+    return result
 
+
+def build_similarities(session: Session, top_k: int = TOP_K) -> dict:
+    """Пересчитать таблицу game_similarities для допущенных игр в одной транзакции.
+
+    Качество рекомендаций считается отдельно: python -m app.services.rec_metrics.
+    """
+    quality = eligible_quality(session)
+    ranked = rank_similar(game_tokens(session, list(quality)), quality, top_k)
+    rows = [
+        {"app_id": app_id, "similar_app_id": other, "rank": rank, "score": round(similarity, 4)}
+        for app_id, similar in ranked.items()
+        for rank, (other, similarity) in enumerate(similar, start=1)
+    ]
     session.execute(delete(GameSimilarity))
     for start in range(0, len(rows), 10000):
         session.execute(insert(GameSimilarity), rows[start : start + 10000])
     session.commit()
-    # Доля рекомендаций, у которых есть общий жанр с исходной игрой (precision@K по жанру)
-    return {"games": len(app_ids), "pairs": len(rows), "genre_precision": round(hits / total, 3)}
+    return {"games": len(ranked), "pairs": len(rows)}
 
 
 def similar_games(session: Session, app_id: int, limit: int) -> list[tuple[Game, float]]:
