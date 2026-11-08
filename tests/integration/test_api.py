@@ -20,7 +20,7 @@ def catalog(db_session):
     outlet = Outlet(name="IGN", normalized_name="ign")
     db_session.add_all(
         [
-            Game(app_id=1, name="Hollow Knight", positive=9900, negative=100, release_date=None, genres=[indie]),
+            Game(app_id=1, name="Hollow Knight", positive=990_000, negative=10_000, release_date=None, genres=[indie]),
             Game(app_id=2, name="Big RPG", positive=800, negative=200, price=59.99, genres=[rpg], mac=True),
             Game(app_id=3, name="Tiny", positive=3, negative=0, is_free=True),
             outlet,
@@ -41,7 +41,8 @@ def test_list_paginated_and_sorted_by_index(client, catalog):
     body = client.get("/games", params={"limit": 2}).json()
 
     assert body["total"] == 3
-    assert [g["app_id"] for g in body["items"]] == [1, 2]
+    # у Tiny три голоса, её оценка почти равна средней по каталогу и оказывается выше Big RPG с 80%
+    assert [g["app_id"] for g in body["items"]] == [1, 3]
     assert body["items"][0]["score"]["is_eligible"] is True
 
 

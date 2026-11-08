@@ -4,6 +4,7 @@
 """
 
 import logging
+from collections import defaultdict
 from datetime import UTC, datetime
 
 from sqlalchemy import func, select
@@ -11,8 +12,17 @@ from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.orm import Session
 
 from app.core.database import SessionLocal
-from app.models import CriticReview, Game, GameScore, MustPlayEntry, RatingRun, ScoreHistory
-from app.services.scoring import next_must_play_status, score_game
+from app.models import CriticReview, Game, GameScore, Genre, MustPlayEntry, RatingRun, ScoreHistory
+from app.models.catalog import game_genres
+from app.services.scoring import (
+    MIN_VOTES,
+    MUST_PLAY_MIN_VOTES,
+    is_game,
+    next_must_play_status,
+    positive_share,
+    primary_ids,
+    score_game,
+)
 
 logger = logging.getLogger(__name__)
 BATCH_SIZE = 5000
@@ -48,10 +58,26 @@ def recalculate(session: Session) -> RatingRun:
         )
         statuses = dict(session.execute(select(MustPlayEntry.app_id, MustPlayEntry.status)).tuples().all())
 
+        games = session.execute(select(Game.app_id, Game.name, Game.positive, Game.negative)).all()
+        genres: dict[int, set[str]] = defaultdict(set)
+        for app_id, name in session.execute(select(game_genres.c.app_id, Genre.name).join(Genre)):
+            genres[app_id].add(name)
+        # программы и дубли одной игры под разными app_id в рейтинг не идут
+        primary = primary_ids((g.app_id, g.name, g.positive + g.negative) for g in games)
+        counts_as_game = {g.app_id: g.app_id in primary and is_game(genres[g.app_id]) for g in games}
+        # средняя доля положительных по каталогу — к ней тянется оценка игр с малым числом голосов
+        shares = [
+            positive_share(g.positive, g.negative)
+            for g in games
+            if counts_as_game[g.app_id] and g.positive + g.negative >= MIN_VOTES
+        ]
+        prior_mean = sum(shares) / len(shares) if shares else 75.0
+
         scores, history, must_play = [], [], []
-        for app_id, positive, negative in session.execute(select(Game.app_id, Game.positive, Game.negative)):
+        for app_id, _, positive, negative in games:
             avg, cnt = critic.get(app_id, (None, 0))
-            s = score_game(positive, negative, float(avg) if avg is not None else None, cnt)
+            critic_avg = float(avg) if avg is not None else None
+            s = score_game(positive, negative, critic_avg, cnt, prior_mean, counts_as_game[app_id])
             scores.append(
                 {
                     "app_id": app_id,
@@ -68,7 +94,8 @@ def recalculate(session: Session) -> RatingRun:
             if s.is_eligible and s.index_score is not None:
                 history.append({"run_id": run.id, "app_id": app_id, "index_score": s.index_score})
             current = statuses.get(app_id)
-            new = next_must_play_status(current, s.index_score, s.is_eligible)
+            known = s.is_eligible and positive + negative >= MUST_PLAY_MIN_VOTES
+            new = next_must_play_status(current, s.index_score, known)
             # пишем только смену статуса, чтобы changed_at показывал реальную дату перехода
             if new is not None and new != current:
                 must_play.append({"app_id": app_id, "status": new, "run_id": run.id})
