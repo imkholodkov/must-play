@@ -2,8 +2,7 @@
 
 Чистые функции без обращения к БД: каждая принимает сырое значение из CSV
 и возвращает значение в едином формате или None, если значения нет.
-Алгоритмы перенесены из лабораторных 3, 4 и 6 курса «ИИ. Аналитика данных»
-и доработаны под форматы, найденные в полном steam_games.csv.
+Правила разбора подобраны под форматы, найденные в полном steam_games.csv.
 """
 
 import html
@@ -78,7 +77,7 @@ def parse_price(value: str | None) -> Decimal | None:
 
 
 def parse_bool(value: str | None) -> bool | None:
-    """Булевы значения пришли строками 'True'/'False' (лаба 4); пусто → None."""
+    """Булевы значения пришли строками 'True'/'False'; пусто → None."""
     if is_blank(value):
         return None
     return {"true": True, "false": False}.get(value.strip().lower())
@@ -95,7 +94,7 @@ def parse_date(value: str | None) -> date | None:
 
 
 def parse_owners(value: str | None) -> tuple[int, int] | None:
-    """Диапазон владельцев в двух форматах (лаба 4): '0 - 20000' и '0 .. 20,000' → (0, 20000)."""
+    """Диапазон владельцев в двух форматах: '0 - 20000' и '0 .. 20,000' → (0, 20000)."""
     if is_blank(value):
         return None
     # «0 .. 20,000» превращаем в «0 - 20000», дальше оба формата разбираются одинаково
@@ -110,13 +109,13 @@ def parse_owners(value: str | None) -> tuple[int, int] | None:
 
 
 def nullify_zero_score(value: str | None) -> int | None:
-    """metacritic_score: 0 означает «оценки нет» (лаба 4), а не ноль баллов."""
+    """metacritic_score: 0 означает «оценки нет», а не ноль баллов."""
     score = parse_int(value)
     return score if score and 1 <= score <= 100 else None
 
 
 def normalize_name(value: str) -> str:
-    """Единый вид названия для справочников (лаба 3): без HTML-сущностей и лишних пробелов."""
+    """Единый вид названия для справочников: без HTML-сущностей и лишних пробелов."""
     return SPACES_RE.sub(" ", html.unescape(value)).strip()
 
 
@@ -138,7 +137,7 @@ def parse_list(value: str | None) -> list[str]:
     """JSON-список из CSV в трёх форматах.
 
     - '["Action", "Indie"]' — список строк;
-    - '[{"id": "1", "description": "Action"}]' — список словарей (лаба 4, parse_genres);
+    - '[{"id": "1", "description": "Action"}]' — список словарей;
     - '{"Indie": 131, "Action": 126}' — теги с числом голосов, порядок по убыванию голосов.
     Битый JSON → пустой список.
     """
@@ -159,7 +158,7 @@ def parse_list(value: str | None) -> list[str]:
 
 
 def parse_languages(value: str | None) -> list[str]:
-    """Языки в трёх форматах (лаба 4, count_languages), возвращается сам список.
+    """Языки в трёх форматах, возвращается сам список.
 
     - '["English", "Polish"]' — JSON;
     - 'English, Japanese' — текст через запятую;
@@ -185,6 +184,6 @@ def parse_languages(value: str | None) -> list[str]:
 
 
 def positive_share(positive: int, negative: int) -> float | None:
-    """Доля положительных отзывов в процентах (лаба 6); без голосов → None."""
+    """Доля положительных отзывов в процентах; без голосов → None."""
     total = positive + negative
     return round(positive / total * 100, 2) if total else None

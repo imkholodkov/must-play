@@ -10,7 +10,7 @@ import math
 from dataclasses import dataclass
 
 Z_95 = 1.96
-MIN_VOTES = 50  # порог из лабы 6: при меньшем числе голосов доля положительных слишком шумная
+MIN_VOTES = 50  # при меньшем числе голосов доля положительных слишком шумная
 MIN_CRITIC_REVIEWS = 2  # одна оценка прессы — ещё не мнение прессы
 CRITIC_WEIGHT = 0.4
 PLAYER_WEIGHT = 0.6

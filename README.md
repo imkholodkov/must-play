@@ -129,7 +129,7 @@ python -m app.etl.import_data --source data/steam_games.csv
 python -m app.etl.import_reviews --source data/steam_games_reviews.csv
 ```
 
-Этапы: потоковое чтение CSV → проверка строки → очистка и унификация → загрузка пачками с upsert → отчёт в `etl_runs` и в лог. Алгоритмы очистки взяты из лабораторных по курсу «ИИ. Аналитика данных» и доработаны под форматы полного файла (`app/etl/cleaning.py`, `app/etl/reviews.py`):
+Этапы: потоковое чтение CSV → проверка строки → очистка и унификация → загрузка пачками с upsert → отчёт в `etl_runs` и в лог. Правила очистки подобраны под форматы полного файла (`app/etl/cleaning.py`, `app/etl/reviews.py`):
 
 | Проблема в данных | Как решается |
 |---|---|
