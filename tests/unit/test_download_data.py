@@ -31,30 +31,29 @@ def data_dir(tmp_path, monkeypatch):
     return tmp_path
 
 
-def test_fetch_extracts_zip(data_dir, monkeypatch):
-    body = zip_bytes("steam_games_reviews.csv", "app_id,name,reviews\n1,Game,ok\n")
-    monkeypatch.setattr(download_data.urllib.request, "urlopen", lambda url: FakeResponse(body, "application/zip"))
+class TestFetch:
+    def test_fetch_extracts_zip(self, data_dir, monkeypatch):
+        body = zip_bytes("steam_games_reviews.csv", "app_id,name,reviews\n1,Game,ok\n")
+        monkeypatch.setattr(download_data.urllib.request, "urlopen", lambda url: FakeResponse(body, "application/zip"))
 
-    path = download_data.fetch("reviews")
+        path = download_data.fetch("reviews")
 
-    assert path == data_dir / "steam_games_reviews.csv"
-    assert path.read_text().startswith("app_id,name,reviews")
-    assert not (data_dir / "steam_games_reviews.csv.zip").exists()
+        assert path == data_dir / "steam_games_reviews.csv"
+        assert path.read_text().startswith("app_id,name,reviews")
+        assert not (data_dir / "steam_games_reviews.csv.zip").exists()
 
+    def test_fetch_skips_existing_file(self, data_dir, monkeypatch):
+        existing = data_dir / "steam_games.csv"
+        existing.write_text("old")
+        monkeypatch.setattr(download_data.urllib.request, "urlopen", lambda url: pytest.fail("не должно качать"))
 
-def test_fetch_skips_existing_file(data_dir, monkeypatch):
-    existing = data_dir / "steam_games.csv"
-    existing.write_text("old")
-    monkeypatch.setattr(download_data.urllib.request, "urlopen", lambda url: pytest.fail("не должно качать"))
+        assert download_data.fetch("games") == existing
+        assert existing.read_text() == "old"
 
-    assert download_data.fetch("games") == existing
-    assert existing.read_text() == "old"
+    def test_download_rejects_html_page(self, data_dir, monkeypatch):
+        monkeypatch.setattr(
+            download_data.urllib.request, "urlopen", lambda url: FakeResponse(b"<html>", "text/html; charset=utf-8")
+        )
 
-
-def test_download_rejects_html_page(data_dir, monkeypatch):
-    monkeypatch.setattr(
-        download_data.urllib.request, "urlopen", lambda url: FakeResponse(b"<html>", "text/html; charset=utf-8")
-    )
-
-    with pytest.raises(RuntimeError, match="HTML"):
-        download_data.download("some-id", data_dir / "file.csv")
+        with pytest.raises(RuntimeError, match="HTML"):
+            download_data.download("some-id", data_dir / "file.csv")
