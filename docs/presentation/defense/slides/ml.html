@@ -1,0 +1,24 @@
+<section id="ml" data-transition="fade" style="background:#F3F1EA;color:#14161F;font-family:'Rubik', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:36px">
+<h2 style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;line-height:1.1">ML: прогноз для игры, у которой ещё нет отзывов</h2>
+<div style="display:flex;gap:32px">
+<div style="flex:1;display:flex;flex-direction:column;gap:14px;background:#FBFAF6;padding:36px;border:1px solid #DDD8CC;border-radius:16px">
+<h3 style="font-size:32px;font-weight:700;color:#B4651A">Две задачи «да / нет»</h3>
+<p style="font-size:26px;line-height:1.45;color:#3C4150"><b>hit</b> — попадёт ли игра в 10% лучших по отзывам игроков</p>
+<p style="font-size:26px;line-height:1.45;color:#3C4150"><b>press</b> — поставит ли пресса 75 и выше</p>
+<h3 style="font-size:32px;font-weight:700;color:#B4651A">Что знает модель</h3>
+<p style="font-size:26px;line-height:1.45;color:#3C4150">Только то, что известно до релиза: цена, дата, платформы, языки, достижения, DLC, жанры и теги — 115 признаков</p>
+<p style="font-size:26px;line-height:1.45;color:#3C4150">Голоса, онлайн и владельцев убрали: из них считается ответ</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:14px;background:#FBFAF6;padding:36px;border:1px solid #DDD8CC;border-radius:16px">
+<h3 style="font-size:32px;font-weight:700;color:#B4651A">Сравнили 3 алгоритма — ROC-AUC</h3>
+<table style="font-size:26px;color:#14161F">
+<tr><th style="width:34%;padding:10px 12px"></th><th style="width:22%">LogReg</th><th style="width:22%">Лес</th><th style="width:22%">Бустинг</th></tr>
+<tr><td style="padding:10px 12px">hit · 56 763 игры</td><td>0,776</td><td>0,804</td><td><b>0,804</b></td></tr>
+<tr><td style="padding:10px 12px">press · 5 875 игр</td><td>0,695</td><td><b>0,740</b></td><td>0,709</td></tr>
+</table>
+<p style="font-size:24px;line-height:1.45;color:#3C4150">ROC-AUC 0,8 — в 80% случаев модель ставит настоящий хит выше не-хита; 0,5 — угадывание</p>
+<p style="font-size:24px;line-height:1.45;color:#3C4150">Лучшая модель → .pkl → API: /ml/upload-model, /ml/predict, /ml/predict-from-csv</p>
+</div>
+</div>
+<aside>Разбиение 80/20 со стратификацией. press хуже: данных в 10 раз меньше и 91% игр в выборке и так получают 75+.</aside>
+</section>

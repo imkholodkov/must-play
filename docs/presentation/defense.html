@@ -114,36 +114,80 @@
 </section>
 
 <section id="recs" data-transition="fade" style="background:#14161F;color:#F3F1EA;font-family:'Rubik', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:40px">
-<h2 style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;line-height:1.1">Рекомендации и ML</h2>
+<h2 style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;line-height:1.1">Рекомендации: «если понравилась эта»</h2>
 <div style="display:flex;gap:32px">
 <div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#1F2230;padding:40px;border-radius:16px">
-<h3 style="font-size:34px;font-weight:700;color:#F2A541">Рекомендательная система</h3>
-<ul style="font-size:26px;line-height:1.5;color:#D4D6DE">
-<li>TF-IDF по жанрам, тегам, категориям + косинусная близость</li>
-<li>Порядок: 0,8 × близость + 0,2 × качество</li>
-<li>Stardew Valley → Coral Island, My Time at Portia</li>
-<li>Подбор по анкете: жанр, режим, платформа, язык, цена</li>
-</ul>
+<h3 style="font-size:34px;font-weight:700;color:#F2A541">Как работает</h3>
+<ol style="font-size:26px;line-height:1.5;color:#D4D6DE">
+<li>Каждая игра — набор слов: жанры, теги, категории</li>
+<li>TF-IDF: редкий тег («фермерство») весит больше частого («Indie»)</li>
+<li>Похожесть двух игр — косинус между их наборами</li>
+<li>Порядок выдачи: 0,8 × похожесть + 0,2 × качество игры</li>
+</ol>
+<p style="font-size:26px;color:#F2A541">Stardew Valley → Coral Island, My Time at Portia</p>
 </div>
 <div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#1F2230;padding:40px;border-radius:16px">
-<h3 style="font-size:34px;font-weight:700;color:#5BA4E6">ML: ROC-AUC на тесте</h3>
+<h3 style="font-size:34px;font-weight:700;color:#5BA4E6">Как проверили качество</h3>
+<p style="font-size:26px;line-height:1.5;color:#D4D6DE">Модель строится без тегов, а попаданием считается общий редкий тег, которого она не видела</p>
 <table style="font-size:26px;color:#E4E2DA">
-<tr><th style="width:40%;padding:10px 14px">Модель</th><th style="width:20%">LogReg</th><th style="width:20%">RF</th><th style="width:20%">GB</th></tr>
-<tr><td style="padding:10px 14px">hit — станет ли хитом</td><td>0,776</td><td>0,804</td><td>0,804</td></tr>
-<tr><td style="padding:10px 14px">press — пресса 75+</td><td>0,695</td><td>0,740</td><td>0,709</td></tr>
+<tr><th style="width:70%;padding:10px 14px">Precision@10 — доля «попаданий» в десятке</th><th>значение</th></tr>
+<tr><td style="padding:10px 14px">наша модель</td><td><b>0,795</b></td></tr>
+<tr><td style="padding:10px 14px">самые популярные игры</td><td>0,587</td></tr>
+<tr><td style="padding:10px 14px">случайные игры</td><td>0,455</td></tr>
 </table>
-<p style="font-size:24px;color:#A9AEBB">Лучшая модель → pkl; /ml/upload-model, /ml/predict, /ml/predict-from-csv</p>
+<p style="font-size:24px;color:#A9AEBB">95% каталога попадает хоть в чьи-то рекомендации</p>
 </div>
 </div>
-<aside>Голоса, онлайн и владельцы не входят в признаки — по ним считается цель. Для hit лучший — градиентный бустинг, для press — случайный лес.</aside>
+<aside>Подбор по анкете (POST /recommendations): жанр, режим, платформа, язык, цена. Проверять по жанрам нельзя — они входят в признаки, результат был бы завышен.</aside>
+</section>
+
+<section id="ml" data-transition="fade" style="background:#F3F1EA;color:#14161F;font-family:'Rubik', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:36px">
+<h2 style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;line-height:1.1">ML: прогноз для игры, у которой ещё нет отзывов</h2>
+<div style="display:flex;gap:32px">
+<div style="flex:1;display:flex;flex-direction:column;gap:14px;background:#FBFAF6;padding:36px;border:1px solid #DDD8CC;border-radius:16px">
+<h3 style="font-size:32px;font-weight:700;color:#B4651A">Две задачи «да / нет»</h3>
+<p style="font-size:26px;line-height:1.45;color:#3C4150"><b>hit</b> — попадёт ли игра в 10% лучших по отзывам игроков</p>
+<p style="font-size:26px;line-height:1.45;color:#3C4150"><b>press</b> — поставит ли пресса 75 и выше</p>
+<h3 style="font-size:32px;font-weight:700;color:#B4651A">Что знает модель</h3>
+<p style="font-size:26px;line-height:1.45;color:#3C4150">Только то, что известно до релиза: цена, дата, платформы, языки, достижения, DLC, жанры и теги — 115 признаков</p>
+<p style="font-size:26px;line-height:1.45;color:#3C4150">Голоса, онлайн и владельцев убрали: из них считается ответ</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:14px;background:#FBFAF6;padding:36px;border:1px solid #DDD8CC;border-radius:16px">
+<h3 style="font-size:32px;font-weight:700;color:#B4651A">Сравнили 3 алгоритма — ROC-AUC</h3>
+<table style="font-size:26px;color:#14161F">
+<tr><th style="width:34%;padding:10px 12px"></th><th style="width:22%">LogReg</th><th style="width:22%">Лес</th><th style="width:22%">Бустинг</th></tr>
+<tr><td style="padding:10px 12px">hit · 56 763 игры</td><td>0,776</td><td>0,804</td><td><b>0,804</b></td></tr>
+<tr><td style="padding:10px 12px">press · 5 875 игр</td><td>0,695</td><td><b>0,740</b></td><td>0,709</td></tr>
+</table>
+<p style="font-size:24px;line-height:1.45;color:#3C4150">ROC-AUC 0,8 — в 80% случаев модель ставит настоящий хит выше не-хита; 0,5 — угадывание</p>
+<p style="font-size:24px;line-height:1.45;color:#3C4150">Лучшая модель → .pkl → API: /ml/upload-model, /ml/predict, /ml/predict-from-csv</p>
+</div>
+</div>
+<aside>Разбиение 80/20 со стратификацией. press хуже: данных в 10 раз меньше и 91% игр в выборке и так получают 75+.</aside>
+</section>
+
+<section id="lessons" data-transition="fade" style="background:#14161F;color:#F3F1EA;font-family:'Rubik', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:36px">
+<h2 style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;line-height:1.1">Трудности и гипотезы, которые не сработали</h2>
+<table style="font-size:25px;color:#E4E2DA">
+<tr><th style="width:34%;padding:12px 16px;color:#F2A541">Гипотеза / проблема</th><th style="width:36%;color:#F2A541">Что пошло не так</th><th style="width:30%;color:#F2A541">Что сделали</th></tr>
+<tr><td style="padding:12px 16px">Оценка игроков по Уилсону</td><td>наверху нишевые игры, Witcher 3 — 1797-е место</td><td>байесовская оценка: 21-е место</td></tr>
+<tr><td style="padding:12px 16px">Поправка прессы −7 в индексе</td><td>наказывала игры, которые хвалят все</td><td>−7 только для флага расхождения</td></tr>
+<tr><td style="padding:12px 16px">Всё из Steam — игры</td><td>Wallpaper Engine на 2-м месте, Portal 2 дважды</td><td>исключили программы и дубли</td></tr>
+<tr><td style="padding:12px 16px">Модель press с порогом 85</td><td>ROC-AUC упал до 0,622</td><td>порог 75: 0,740</td></tr>
+<tr><td style="padding:12px 16px">Голоса и онлайн как признаки</td><td>утечка: модель видит ответ</td><td>только данные до релиза</td></tr>
+<tr><td style="padding:12px 16px">Проверка рекомендаций по жанрам</td><td>жанры уже в признаках — результат завышен</td><td>проверка по скрытым тегам</td></tr>
+<tr><td style="padding:12px 16px">Подбор по времени прохождения</td><td>заполнено у 8% игр</td><td>отказались</td></tr>
+<tr><td style="padding:12px 16px">Языки «как есть»</td><td>3 587 вариантов: JSON, текст, HTML</td><td>разбор и словарь: 103 языка</td></tr>
+</table>
+<aside>Датасет 925 МБ не помещается в GitHub (лимит 100 МБ) — лежит на Google Drive, в репозитории только выборка.</aside>
 </section>
 
 <section id="quality" data-transition="fade" style="background:#F3F1EA;color:#14161F;font-family:'Rubik', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px">
 <h2 style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;line-height:1.1">Качество и демо</h2>
 <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:32px">
 <div style="display:flex;flex-direction:column;gap:12px;background:#FBFAF6;padding:40px;border:1px solid #DDD8CC;border-radius:16px">
-<p style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;color:#B4651A">145</p>
-<p style="font-size:28px;color:#3C4150">тестов: 92 unit, 53 интеграционных</p>
+<p style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;color:#B4651A">176</p>
+<p style="font-size:28px;color:#3C4150">тестов: 117 unit, 59 интеграционных</p>
 </div>
 <div style="display:flex;flex-direction:column;gap:12px;background:#FBFAF6;padding:40px;border:1px solid #DDD8CC;border-radius:16px">
 <p style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;color:#B4651A">94%</p>
