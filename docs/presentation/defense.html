@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Must Play — защита проекта</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400..700&family=Rubik:wght@400;500;700&display=swap">
+<style>
+  html, body { margin: 0; height: 100%; background: #0d0e13; overflow: hidden; }
+  #stage { position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px; transform-origin: 0 0; }
+  section { position: absolute; inset: 0; box-sizing: border-box; }
+  /* у слайдов display задан в style, поэтому скрывать неактивные можно только через !important */
+  section:not(.active) { display: none !important; }
+  section aside { display: none; }
+  section h1, section h2, section h3, section p, section ul, section ol { margin: 0; }
+  section table { border-collapse: collapse; }
+  section th, section td { text-align: left; border-bottom: 1px solid rgba(128, 128, 128, .3); }
+  #counter { position: fixed; right: 16px; bottom: 12px; color: #8a90a0; font: 14px sans-serif; }
+</style>
+</head>
+<body>
+<div id="stage">
+<section id="cover" data-transition="fade" style="background:#14161F;color:#F3F1EA;font-family:'Rubik', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;justify-content:center;gap:40px">
+<p style="font-size:32px;color:#F2A541;letter-spacing:4px;text-transform:uppercase">Итоговый проект · Python и инженерия данных</p>
+<h1 style="font-family:'Oswald', Arial, sans-serif;font-size:160px;font-weight:700;line-height:1.0">MUST PLAY</h1>
+<p style="font-size:48px;color:#BFC3CF;width:1400px">Рейтинг игр Steam всех времён: очистка данных, рейтинг, рекомендации и ML на FastAPI</p>
+<p style="font-size:30px;color:#BFC3CF">github.com/imkholodkov/must-play</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1200px;font-size:28px;color:#8A90A0">Холодков Иван · ИТМО · 2026</p>
+<aside>Тема одобрена на прошлой встрече. Задача минимум — очистка и унификация данных, вторая задача — рекомендательная система.</aside>
+</section>
+
+<section id="task" data-transition="fade" style="background:#F3F1EA;color:#14161F;font-family:'Rubik', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:56px">
+<h2 style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;line-height:1.1">Задача и данные</h2>
+<p style="font-size:34px;line-height:1.4;color:#3C4150;width:1500px">Ответить на вопрос «во что поиграть»: один честный рейтинг из мнений прессы и игроков, список must play, похожие игры и подбор по анкете.</p>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:32px">
+<div style="display:flex;flex-direction:column;gap:12px;background:#FBFAF6;padding:40px;border:1px solid #DDD8CC;border-radius:16px">
+<p style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;color:#B4651A">141 590</p>
+<p style="font-size:28px;color:#3C4150">игр загружено в базу</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#FBFAF6;padding:40px;border:1px solid #DDD8CC;border-radius:16px">
+<p style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;color:#B4651A">28 747</p>
+<p style="font-size:28px;color:#3C4150">обзоров прессы разобрано</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#FBFAF6;padding:40px;border:1px solid #DDD8CC;border-radius:16px">
+<p style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;color:#B4651A">30 142</p>
+<p style="font-size:28px;color:#3C4150">игр допущено в рейтинг</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#FBFAF6;padding:40px;border:1px solid #DDD8CC;border-radius:16px">
+<p style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;color:#B4651A">106</p>
+<p style="font-size:28px;color:#3C4150">игры в must play</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1600px;font-size:24px;color:#6A6F7C">Источник: открытый датасет Steam — steam_games.csv (925 МБ, 42 поля) и steam_games_reviews.csv</p>
+<aside>Цифры — из локальной базы после полного импорта. 15 строк каталога отклонены: пустое название.</aside>
+</section>
+
+<section id="product" data-transition="fade" style="background:#14161F;color:#F3F1EA;font-family:'Rubik', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:40px">
+<h2 style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;line-height:1.1">Что получилось</h2>
+<p style="font-size:32px;line-height:1.4;color:#BFC3CF;width:1600px">Веб-сервис, который из сырого датасета Steam делает ответ на вопрос «во что поиграть». В нём пять страниц:</p>
+<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:24px">
+<div style="display:flex;flex-direction:column;gap:12px;background:#1F2230;padding:32px;border-radius:16px"><p style="font-size:30px;font-weight:700;color:#F2A541">Рейтинг</p><p style="font-size:24px;line-height:1.4;color:#D4D6DE">30 тыс. игр по единому индексу, фильтры по жанру, десятилетию, платформе</p></div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#1F2230;padding:32px;border-radius:16px"><p style="font-size:30px;font-weight:700;color:#F2A541">Must play</p><p style="font-size:24px;line-height:1.4;color:#D4D6DE">106 игр, которые стоит пройти каждому</p></div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#1F2230;padding:32px;border-radius:16px"><p style="font-size:30px;font-weight:700;color:#F2A541">Во что поиграть</p><p style="font-size:24px;line-height:1.4;color:#D4D6DE">анкета: жанр, режим, платформа, язык, цена → подборка</p></div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#1F2230;padding:32px;border-radius:16px"><p style="font-size:30px;font-weight:700;color:#F2A541">Каталог</p><p style="font-size:24px;line-height:1.4;color:#D4D6DE">поиск по 141 тыс. игр; карточка: оценки, цитаты прессы, похожие игры</p></div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#1F2230;padding:32px;border-radius:16px"><p style="font-size:30px;font-weight:700;color:#F2A541">Аналитика</p><p style="font-size:24px;line-height:1.4;color:#D4D6DE">жанры, годы, строгость изданий, кнопка пересчёта</p></div>
+</div>
+<div style="display:flex;gap:24px">
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;background:#1F2230;padding:32px;border-radius:16px"><p style="font-size:28px;font-weight:700;color:#5BA4E6">REST API · 21 эндпоинт</p><p style="font-size:24px;line-height:1.4;color:#D4D6DE">всё то же самое для программ: /games, /rating, /must-play, /recommendations, /analytics, /ml — документация в Swagger</p></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;background:#1F2230;padding:32px;border-radius:16px"><p style="font-size:28px;font-weight:700;color:#5BA4E6">ML-прогноз</p><p style="font-size:24px;line-height:1.4;color:#D4D6DE">через API (Swagger, POST /ml/predict-from-csv) загружаешь CSV с новыми играми — получаешь вероятность хита и высокой оценки прессы</p></div>
+</div>
+<aside>Показать вживую: рейтинг → Witcher 3 → похожие игры → анкета.</aside>
+</section>
+
+<section id="flow" data-transition="fade" style="background:#F3F1EA;color:#14161F;font-family:'Rubik', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:40px">
+<h2 style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;line-height:1.1">Как это работает: путь данных</h2>
+<div style="display:flex;gap:16px;align-items:stretch">
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;background:#FBFAF6;padding:32px;border:1px solid #DDD8CC;border-radius:16px"><p style="font-family:'Oswald', Arial, sans-serif;font-size:56px;color:#B4651A">1</p><p style="font-size:28px;font-weight:700">Скачать</p><p style="font-size:23px;line-height:1.4;color:#3C4150">2 CSV из Google Drive: 925 МБ каталога и цитаты прессы</p></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;background:#FBFAF6;padding:32px;border:1px solid #DDD8CC;border-radius:16px"><p style="font-family:'Oswald', Arial, sans-serif;font-size:56px;color:#B4651A">2</p><p style="font-size:28px;font-weight:700">Очистить</p><p style="font-size:23px;line-height:1.4;color:#3C4150">ETL: разбор форматов, единые шкалы, отбраковка с причиной</p></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;background:#FBFAF6;padding:32px;border:1px solid #DDD8CC;border-radius:16px"><p style="font-family:'Oswald', Arial, sans-serif;font-size:56px;color:#B4651A">3</p><p style="font-size:28px;font-weight:700">Сохранить</p><p style="font-size:23px;line-height:1.4;color:#3C4150">PostgreSQL: 19 таблиц, upsert без дублей</p></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;background:#FBFAF6;padding:32px;border:1px solid #DDD8CC;border-radius:16px"><p style="font-family:'Oswald', Arial, sans-serif;font-size:56px;color:#B4651A">4</p><p style="font-size:28px;font-weight:700">Посчитать</p><p style="font-size:23px;line-height:1.4;color:#3C4150">индекс, must play, похожие игры — заранее, по данным из базы</p></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;background:#FBFAF6;padding:32px;border:1px solid #DDD8CC;border-radius:16px"><p style="font-family:'Oswald', Arial, sans-serif;font-size:56px;color:#B4651A">5</p><p style="font-size:28px;font-weight:700">Отдать</p><p style="font-size:23px;line-height:1.4;color:#3C4150">FastAPI отвечает из готовых таблиц за миллисекунды</p></div>
+</div>
+<div style="display:flex;gap:24px">
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;background:#14161F;padding:32px;border-radius:16px"><p style="font-size:28px;font-weight:700;color:#F2A541">Три контейнера</p><p style="font-size:24px;line-height:1.5;color:#E4E2DA"><b>db</b> — PostgreSQL · <b>app</b> — API и сайт · <b>scheduler</b> — раз в неделю (пн, 03:00) пересчитывает рейтинг и похожие игры по данным, которые уже в базе. Новые данные приходят импортом или через API</p></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;background:#14161F;padding:32px;border-radius:16px"><p style="font-size:28px;font-weight:700;color:#F2A541">Запуск</p><p style="font-size:24px;line-height:1.5;color:#E4E2DA">docker compose up — и миграции применяются сами; данные: одна команда seed или полный импорт</p></div>
+</div>
+<aside>Тяжёлое считается заранее: похожие игры для 30 тыс. игр — около 45 секунд, поэтому не на каждый запрос.</aside>
+</section>
+
+<section id="arch" data-transition="fade" style="background:#14161F;color:#F3F1EA;font-family:'Rubik', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:36px">
+<h2 style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;line-height:1.1">Структура проекта</h2>
+<div style="display:flex;gap:32px">
+<div style="flex:4;display:flex;flex-direction:column;gap:12px;background:#1F2230;padding:32px;border-radius:16px">
+<p style="font-size:28px;font-weight:700;color:#F2A541">Папки</p>
+<table style="font-size:24px;color:#E4E2DA">
+<tr><td style="padding:7px 12px;font-family:monospace;color:#F2A541;width:34%">app/etl</td><td>скачивание и очистка данных</td></tr>
+<tr><td style="padding:7px 12px;font-family:monospace;color:#F2A541">app/models</td><td>таблицы БД (SQLAlchemy)</td></tr>
+<tr><td style="padding:7px 12px;font-family:monospace;color:#F2A541">app/services</td><td>рейтинг, рекомендации, метрики</td></tr>
+<tr><td style="padding:7px 12px;font-family:monospace;color:#F2A541">app/api</td><td>эндпоинты FastAPI</td></tr>
+<tr><td style="padding:7px 12px;font-family:monospace;color:#F2A541">app/ml · ml/</td><td>признаки, обучение, EDA-ноутбук</td></tr>
+<tr><td style="padding:7px 12px;font-family:monospace;color:#F2A541">frontend/</td><td>веб-страницы на JS</td></tr>
+<tr><td style="padding:7px 12px;font-family:monospace;color:#F2A541">migrations/</td><td>Alembic</td></tr>
+<tr><td style="padding:7px 12px;font-family:monospace;color:#F2A541">tests/</td><td>unit и интеграционные</td></tr>
+</table>
+</div>
+<div style="flex:4;display:flex;flex-direction:column;gap:12px;background:#1F2230;padding:32px;border-radius:16px">
+<p style="font-size:28px;font-weight:700;color:#5BA4E6">Как идёт запрос: открыть карточку игры</p>
+<p style="font-size:24px;font-family:monospace;color:#F2A541">GET /games/292030</p>
+<p style="font-size:23px;line-height:1.35;color:#E4E2DA"><b>1. Роутер</b> app/api/games.py<br><span style="color:#8A90A0">проверяет, что id — число, иначе 422</span></p>
+<p style="font-size:23px;line-height:1.35;color:#E4E2DA"><b>2. Сервис</b> app/services/games.py<br><span style="color:#8A90A0">решает, что делать: игры нет — 404, есть — собрать карточку</span></p>
+<p style="font-size:23px;line-height:1.35;color:#E4E2DA"><b>3. Репозиторий</b> app/repositories/games.py<br><span style="color:#8A90A0">SQL-запросы: игра, оценки, цитаты прессы, статус must play</span></p>
+<p style="font-size:23px;line-height:1.35;color:#E4E2DA"><b>4. Ответ</b> app/schemas/game.py<br><span style="color:#8A90A0">Pydantic собирает JSON строго по схеме</span></p>
+<p style="font-size:22px;line-height:1.35;color:#A9AEBB">Каждый слой делает одно дело, поэтому формулы тестируются без БД и HTTP</p>
+</div>
+</div>
+<aside>Связи многие-ко-многим: игры ↔ жанры, теги, категории, языки, разработчики. Схема — docs/erd.md.</aside>
+</section>
+
+<section id="etl" data-transition="fade" style="background:#F3F1EA;color:#14161F;font-family:'Rubik', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:32px">
+<h2 style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;line-height:1.1">Как унифицировали данные</h2>
+<p style="font-size:28px;color:#3C4150">Одно и то же поле в Steam записано по-разному. Было → стало:</p>
+<table style="font-size:25px;color:#14161F;background:#FBFAF6;border-radius:16px">
+<tr><th style="width:18%;padding:14px 20px">Поле</th><th style="width:44%">Было (сырые данные)</th><th style="width:38%">Стало</th></tr>
+<tr><td style="padding:14px 20px"><b>Языки</b></td><td>JSON-список · «English, French» · HTML «English&lt;strong&gt;*&lt;/strong&gt;» · «Английский»</td><td>список из 103 языков вместо 3 587 вариантов</td></tr>
+<tr><td style="padding:14px 20px"><b>Жанры, теги</b></td><td>строки · словари {id, description} · «тег → голоса»</td><td>один список имён: 43 жанра, 452 тега</td></tr>
+<tr><td style="padding:14px 20px"><b>Владельцы</b></td><td>«0 - 20000» и «0 .. 20,000»</td><td>min = 0, max = 20 000</td></tr>
+<tr><td style="padding:14px 20px"><b>Оценки прессы</b></td><td>4/5 · 8/10 · 17/20 · 85% · 11/10</td><td>шкала 0–100, шутки отброшены</td></tr>
+<tr><td style="padding:14px 20px"><b>Издания</b></td><td>«Rock, Paper, Shotgun» и «Rock Paper Shotgun»</td><td>одно издание: 11 152 → 9 246</td></tr>
+<tr><td style="padding:14px 20px"><b>Metacritic</b></td><td>0 = «нет оценки»</td><td>NULL — не портит средние</td></tr>
+</table>
+<p style="font-size:26px;color:#3C4150">Файл читается потоково · битые строки — в отчёт etl_runs с причиной · повторный импорт не создаёт дублей</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1600px;font-size:24px;color:#6A6F7C">Код: app/etl/cleaning.py, app/etl/reviews.py · полный импорт — около 2 минут</p>
+<aside>Задача минимум. 141 605 строк → 141 590 игр, 15 отклонены (пустое название).</aside>
+</section>
+
+<section id="rules" data-transition="fade" style="background:#F3F1EA;color:#14161F;font-family:'Rubik', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:40px">
+<h2 style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;line-height:1.1">Рейтинг и бизнес-правила</h2>
+<div style="display:flex;gap:40px">
+<div style="flex:3;display:flex;flex-direction:column;gap:16px;background:#FBFAF6;padding:40px;border:1px solid #DDD8CC;border-radius:16px">
+<ol style="font-size:28px;line-height:1.5;color:#3C4150">
+<li><b>Индекс</b> = 0,4 × пресса + 0,6 × игроки (байесовская оценка, как в IMDb Top 250)</li>
+<li><b>Допуск</b>: от 50 голосов, только игры, без дублей</li>
+<li><b>Расхождение</b> больше 20 пунктов (пресса −7 за щедрость) — пометка</li>
+<li><b>Must play</b>: 10 000+ голосов, candidate → in_list → dropped, пороги 93 / 92</li>
+<li><b>Атомарный пересчёт</b>: всё или ничего, параллельный запуск — 409</li>
+</ol>
+</div>
+<div style="flex:2;display:flex;flex-direction:column;gap:16px;background:#14161F;padding:40px;border-radius:16px">
+<h3 style="font-size:34px;font-weight:700;color:#F2A541">Пример: The Witcher 3</h3>
+<p style="font-size:28px;line-height:1.5;color:#E4E2DA">Игроки 95,7 · пресса 97 → индекс 96,2 → 21-е место, в must play</p>
+<h3 style="font-size:34px;font-weight:700;color:#F2A541">Почему так</h3>
+<p style="font-size:28px;line-height:1.5;color:#E4E2DA">Пока голосов меньше 20 000, оценка тянется к средней: 99% у тысячи фанатов не обгоняют 96% у 835 тысяч</p>
+</div>
+</div>
+<aside>Раньше оценка игроков считалась по Уилсону, и наверху были нишевые игры, а Witcher 3 стоял на 1797-м месте. Байесовская оценка учитывает, сколько людей игру знают.</aside>
+</section>
+
+<section id="recs" data-transition="fade" style="background:#14161F;color:#F3F1EA;font-family:'Rubik', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:40px">
+<h2 style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;line-height:1.1">Рекомендации: «если понравилась эта»</h2>
+<div style="display:flex;gap:32px">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#1F2230;padding:40px;border-radius:16px">
+<h3 style="font-size:34px;font-weight:700;color:#F2A541">Как работает</h3>
+<ol style="font-size:26px;line-height:1.5;color:#D4D6DE">
+<li>Каждая игра — набор слов: жанры, теги, категории</li>
+<li>TF-IDF: редкий тег («фермерство») весит больше частого («Indie»)</li>
+<li>Похожесть двух игр — косинус между их наборами</li>
+<li>Порядок выдачи: 0,8 × похожесть + 0,2 × качество игры</li>
+</ol>
+<p style="font-size:26px;color:#F2A541">Stardew Valley → Coral Island, My Time at Portia</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#1F2230;padding:40px;border-radius:16px">
+<h3 style="font-size:34px;font-weight:700;color:#5BA4E6">Как проверили качество</h3>
+<p style="font-size:26px;line-height:1.5;color:#D4D6DE">Модель строится без тегов, а попаданием считается общий редкий тег, которого она не видела</p>
+<table style="font-size:26px;color:#E4E2DA">
+<tr><th style="width:70%;padding:10px 14px">Precision@10 — доля «попаданий» в десятке</th><th>значение</th></tr>
+<tr><td style="padding:10px 14px">наша модель</td><td><b>0,795</b></td></tr>
+<tr><td style="padding:10px 14px">самые популярные игры</td><td>0,587</td></tr>
+<tr><td style="padding:10px 14px">случайные игры</td><td>0,455</td></tr>
+</table>
+<p style="font-size:24px;color:#A9AEBB">95% каталога попадает хоть в чьи-то рекомендации</p>
+</div>
+</div>
+<aside>Подбор по анкете (POST /recommendations): жанр, режим, платформа, язык, цена. Проверять по жанрам нельзя — они входят в признаки, результат был бы завышен.</aside>
+</section>
+
+<section id="ml" data-transition="fade" style="background:#F3F1EA;color:#14161F;font-family:'Rubik', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:36px">
+<h2 style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;line-height:1.1">ML: прогноз для игры, у которой ещё нет отзывов</h2>
+<div style="display:flex;gap:32px">
+<div style="flex:1;display:flex;flex-direction:column;gap:14px;background:#FBFAF6;padding:36px;border:1px solid #DDD8CC;border-radius:16px">
+<h3 style="font-size:32px;font-weight:700;color:#B4651A">Две задачи «да / нет»</h3>
+<p style="font-size:26px;line-height:1.45;color:#3C4150"><b>hit</b> — попадёт ли игра в 10% лучших по отзывам игроков</p>
+<p style="font-size:26px;line-height:1.45;color:#3C4150"><b>press</b> — поставит ли пресса 75 и выше</p>
+<h3 style="font-size:32px;font-weight:700;color:#B4651A">Что знает модель</h3>
+<p style="font-size:26px;line-height:1.45;color:#3C4150">Только то, что известно до релиза: цена, дата, платформы, языки, достижения, DLC, жанры и теги — 115 признаков</p>
+<p style="font-size:26px;line-height:1.45;color:#3C4150">Голоса, онлайн и владельцев убрали: из них считается ответ</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:14px;background:#FBFAF6;padding:36px;border:1px solid #DDD8CC;border-radius:16px">
+<h3 style="font-size:32px;font-weight:700;color:#B4651A">Сравнили 3 алгоритма — ROC-AUC</h3>
+<table style="font-size:26px;color:#14161F">
+<tr><th style="width:34%;padding:10px 12px"></th><th style="width:22%">LogReg</th><th style="width:22%">Лес</th><th style="width:22%">Бустинг</th></tr>
+<tr><td style="padding:10px 12px">hit · 56 763 игры</td><td>0,776</td><td>0,804</td><td><b>0,804</b></td></tr>
+<tr><td style="padding:10px 12px">press · 5 875 игр</td><td>0,695</td><td><b>0,740</b></td><td>0,709</td></tr>
+</table>
+<p style="font-size:24px;line-height:1.45;color:#3C4150">ROC-AUC 0,8 — в 80% случаев модель ставит настоящий хит выше не-хита; 0,5 — угадывание</p>
+<p style="font-size:24px;line-height:1.45;color:#3C4150">Лучшая модель → .pkl → API: /ml/upload-model, /ml/predict, /ml/predict-from-csv</p>
+</div>
+</div>
+<aside>Разбиение 80/20 со стратификацией. press хуже: данных в 10 раз меньше и 91% игр в выборке и так получают 75+.</aside>
+</section>
+
+<section id="lessons" data-transition="fade" style="background:#14161F;color:#F3F1EA;font-family:'Rubik', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:36px">
+<h2 style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;line-height:1.1">Трудности и гипотезы, которые не сработали</h2>
+<table style="font-size:25px;color:#E4E2DA">
+<tr><th style="width:34%;padding:12px 16px;color:#F2A541">Гипотеза / проблема</th><th style="width:36%;color:#F2A541">Что пошло не так</th><th style="width:30%;color:#F2A541">Что сделали</th></tr>
+<tr><td style="padding:12px 16px">Оценка игроков по Уилсону</td><td>наверху нишевые игры, Witcher 3 — 1797-е место</td><td>байесовская оценка: 21-е место</td></tr>
+<tr><td style="padding:12px 16px">Поправка прессы −7 в индексе</td><td>наказывала игры, которые хвалят все</td><td>−7 только для флага расхождения</td></tr>
+<tr><td style="padding:12px 16px">Всё из Steam — игры</td><td>Wallpaper Engine на 2-м месте, Portal 2 дважды</td><td>исключили программы и дубли</td></tr>
+<tr><td style="padding:12px 16px">Модель press с порогом 85</td><td>ROC-AUC упал до 0,622</td><td>порог 75: 0,740</td></tr>
+<tr><td style="padding:12px 16px">Голоса и онлайн как признаки</td><td>утечка: модель видит ответ</td><td>только данные до релиза</td></tr>
+<tr><td style="padding:12px 16px">Проверка рекомендаций по жанрам</td><td>жанры уже в признаках — результат завышен</td><td>проверка по скрытым тегам</td></tr>
+<tr><td style="padding:12px 16px">Подбор по времени прохождения</td><td>заполнено у 8% игр</td><td>отказались</td></tr>
+<tr><td style="padding:12px 16px">Языки «как есть»</td><td>3 587 вариантов: JSON, текст, HTML</td><td>разбор и словарь: 103 языка</td></tr>
+</table>
+<aside>Датасет 925 МБ не помещается в GitHub (лимит 100 МБ) — лежит на Google Drive, в репозитории только выборка.</aside>
+</section>
+
+<section id="quality" data-transition="fade" style="background:#F3F1EA;color:#14161F;font-family:'Rubik', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px">
+<h2 style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;line-height:1.1">Качество и демо</h2>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:32px">
+<div style="display:flex;flex-direction:column;gap:12px;background:#FBFAF6;padding:40px;border:1px solid #DDD8CC;border-radius:16px">
+<p style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;color:#B4651A">177</p>
+<p style="font-size:28px;color:#3C4150">тестов: 117 unit, 60 интеграционных</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#FBFAF6;padding:40px;border:1px solid #DDD8CC;border-radius:16px">
+<p style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;color:#B4651A">94%</p>
+<p style="font-size:28px;color:#3C4150">покрытие кода, порог 70%</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#FBFAF6;padding:40px;border:1px solid #DDD8CC;border-radius:16px">
+<p style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;color:#B4651A">CI</p>
+<p style="font-size:28px;color:#3C4150">ruff + pytest на каждый push</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#FBFAF6;padding:40px;border:1px solid #DDD8CC;border-radius:16px">
+<p style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;color:#B4651A">Allure</p>
+<p style="font-size:28px;color:#3C4150">отчёт с историей на GitHub Pages</p>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<h3 style="font-size:36px;font-weight:700">Демо</h3>
+<ul style="font-size:28px;line-height:1.6;color:#3C4150">
+<li>Веб-интерфейс: рейтинг → карточка игры → «во что поиграть» → аналитика</li>
+<li>Swagger: создание игры, ошибки 409 и 422, пересчёт рейтинга</li>
+<li>Отчёт Allure и покрытие: imkholodkov.github.io/must-play</li>
+</ul>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1600px;font-size:24px;color:#6A6F7C">github.com/imkholodkov/must-play · docker compose up</p>
+<aside>Тесты с БД идут на отдельной базе в транзакции с откатом. В CI PostgreSQL поднимается как сервис.</aside>
+</section>
+
+</div>
+<div id="counter"></div>
+<script>
+  const slides = [...document.querySelectorAll("#stage > section")];
+  const stage = document.getElementById("stage");
+  let current = 0;
+  function fit() {
+    const scale = Math.min(innerWidth / 1920, innerHeight / 1080);
+    stage.style.transform = `scale(${scale}) translate(-50%, -50%)`;
+  }
+  function show(i) {
+    current = Math.max(0, Math.min(slides.length - 1, i));
+    slides.forEach((s, n) => s.classList.toggle("active", n === current));
+    document.getElementById("counter").textContent = `${current + 1} / ${slides.length}`;
+    location.hash = current + 1;
+  }
+  addEventListener("resize", fit);
+  addEventListener("keydown", (e) => {
+    if (["ArrowRight", "PageDown", " "].includes(e.key)) show(current + 1);
+    if (["ArrowLeft", "PageUp"].includes(e.key)) show(current - 1);
+    if (e.key === "f") document.documentElement.requestFullscreen?.();
+  });
+  addEventListener("click", (e) => show(current + (e.clientX > innerWidth / 2 ? 1 : -1)));
+  fit();
+  show((parseInt(location.hash.slice(1), 10) || 1) - 1);
+</script>
+</body>
+</html>
