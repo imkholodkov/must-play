@@ -37,7 +37,6 @@
 | Docker | `Dockerfile`, `docker-compose.yml` (сервисы db, app, scheduler) |
 | Зависимости, настройки ruff/pytest | `requirements.txt`, `requirements-dev.txt`, `pyproject.toml` |
 | Текст задания | `docs/assignment.md` |
-| План и принятые решения | `docs/PLAN.md` |
 | Как запустить | `README.md` |
 | Презентации | `docs/presentation/idea.html`, `defense.html` (собираются `build.py`) |
 
