@@ -1,0 +1,16 @@
+<section id="product" data-transition="fade" style="background:#14161F;color:#F3F1EA;font-family:'Rubik', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:40px">
+<h2 style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;line-height:1.1">Что получилось</h2>
+<p style="font-size:32px;line-height:1.4;color:#BFC3CF;width:1600px">Веб-сервис, который из сырого датасета Steam делает ответ на вопрос «во что поиграть». В нём пять страниц:</p>
+<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:24px">
+<div style="display:flex;flex-direction:column;gap:12px;background:#1F2230;padding:32px;border-radius:16px"><p style="font-size:30px;font-weight:700;color:#F2A541">Рейтинг</p><p style="font-size:24px;line-height:1.4;color:#D4D6DE">30 тыс. игр по единому индексу, фильтры по жанру, десятилетию, платформе</p></div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#1F2230;padding:32px;border-radius:16px"><p style="font-size:30px;font-weight:700;color:#F2A541">Must play</p><p style="font-size:24px;line-height:1.4;color:#D4D6DE">106 игр, которые стоит пройти каждому</p></div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#1F2230;padding:32px;border-radius:16px"><p style="font-size:30px;font-weight:700;color:#F2A541">Во что поиграть</p><p style="font-size:24px;line-height:1.4;color:#D4D6DE">анкета: жанр, режим, платформа, язык, цена → подборка</p></div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#1F2230;padding:32px;border-radius:16px"><p style="font-size:30px;font-weight:700;color:#F2A541">Каталог</p><p style="font-size:24px;line-height:1.4;color:#D4D6DE">поиск по 141 тыс. игр; карточка: оценки, цитаты прессы, похожие игры</p></div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#1F2230;padding:32px;border-radius:16px"><p style="font-size:30px;font-weight:700;color:#F2A541">Аналитика</p><p style="font-size:24px;line-height:1.4;color:#D4D6DE">жанры, годы, строгость изданий, кнопка пересчёта</p></div>
+</div>
+<div style="display:flex;gap:24px">
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;background:#1F2230;padding:32px;border-radius:16px"><p style="font-size:28px;font-weight:700;color:#5BA4E6">REST API · 21 эндпоинт</p><p style="font-size:24px;line-height:1.4;color:#D4D6DE">всё то же самое для программ: /games, /rating, /must-play, /recommendations, /analytics, /ml — документация в Swagger</p></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:12px;background:#1F2230;padding:32px;border-radius:16px"><p style="font-size:28px;font-weight:700;color:#5BA4E6">ML-прогноз</p><p style="font-size:24px;line-height:1.4;color:#D4D6DE">через API (Swagger, POST /ml/predict-from-csv) загружаешь CSV с новыми играми — получаешь вероятность хита и высокой оценки прессы</p></div>
+</div>
+<aside>Показать вживую: рейтинг → Witcher 3 → похожие игры → анкета.</aside>
+</section>

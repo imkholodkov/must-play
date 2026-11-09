@@ -1,15 +1,16 @@
-<section id="etl" data-transition="fade" style="background:#F3F1EA;color:#14161F;font-family:'Rubik', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
-<h2 style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;line-height:1.1">Задача минимум: очистка и унификация</h2>
-<table style="font-size:28px;color:#14161F;background:#FBFAF6;border-radius:16px">
-<tr><th style="width:40%;padding:16px 24px">Проблема в данных</th><th style="width:38%">Решение</th><th style="width:22%">Результат</th></tr>
-<tr><td style="padding:16px 24px">Владельцы: «0 - 20000» и «0 .. 20,000»</td><td>разбор в диапазон min / max</td><td>оба формата</td></tr>
-<tr><td style="padding:16px 24px">Жанры строками, словарями и «тег → голоса»</td><td>единый список имён без дублей</td><td>43 жанра, 452 тега</td></tr>
-<tr><td style="padding:16px 24px">Языки: JSON, текст, HTML со звёздочками</td><td>разбор всех трёх форматов</td><td>3 587 → 134 языка</td></tr>
-<tr><td style="padding:16px 24px">Оценки прессы в /5, /10, /20, /100, %</td><td>приведение к 0–100</td><td>11 523 оценки</td></tr>
-<tr><td style="padding:16px 24px">«Rock, Paper, Shotgun» и «Rock Paper Shotgun»</td><td>общий ключ издания</td><td>11 152 → 9 246 изданий</td></tr>
-<tr><td style="padding:16px 24px">Metacritic 0 = «нет оценки»</td><td>NULL вместо нуля</td><td>без ложных нулей</td></tr>
+<section id="etl" data-transition="fade" style="background:#F3F1EA;color:#14161F;font-family:'Rubik', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:32px">
+<h2 style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;line-height:1.1">Как унифицировали данные</h2>
+<p style="font-size:28px;color:#3C4150">Одно и то же поле в Steam записано по-разному. Было → стало:</p>
+<table style="font-size:25px;color:#14161F;background:#FBFAF6;border-radius:16px">
+<tr><th style="width:18%;padding:14px 20px">Поле</th><th style="width:44%">Было (сырые данные)</th><th style="width:38%">Стало</th></tr>
+<tr><td style="padding:14px 20px"><b>Языки</b></td><td>JSON-список · «English, French» · HTML «English&lt;strong&gt;*&lt;/strong&gt;» · «Английский»</td><td>список из 103 языков вместо 3 587 вариантов</td></tr>
+<tr><td style="padding:14px 20px"><b>Жанры, теги</b></td><td>строки · словари {id, description} · «тег → голоса»</td><td>один список имён: 43 жанра, 452 тега</td></tr>
+<tr><td style="padding:14px 20px"><b>Владельцы</b></td><td>«0 - 20000» и «0 .. 20,000»</td><td>min = 0, max = 20 000</td></tr>
+<tr><td style="padding:14px 20px"><b>Оценки прессы</b></td><td>4/5 · 8/10 · 17/20 · 85% · 11/10</td><td>шкала 0–100, шутки отброшены</td></tr>
+<tr><td style="padding:14px 20px"><b>Издания</b></td><td>«Rock, Paper, Shotgun» и «Rock Paper Shotgun»</td><td>одно издание: 11 152 → 9 246</td></tr>
+<tr><td style="padding:14px 20px"><b>Metacritic</b></td><td>0 = «нет оценки»</td><td>NULL — не портит средние</td></tr>
 </table>
-<p style="font-size:28px;color:#3C4150">Потоковое чтение · проверка строк · upsert без дублей · отчёт etl_runs с причинами отказов</p>
-<p style="position:absolute;left:128px;bottom:64px;width:1600px;font-size:24px;color:#6A6F7C">Полный импорт каталога — около 2 минут; повторный запуск: новых 0, обновлено 141 590</p>
-<aside>Повторный импорт проверен на полном файле: дублей нет. Прерванный импорт помечается как failed.</aside>
+<p style="font-size:26px;color:#3C4150">Файл читается потоково · битые строки — в отчёт etl_runs с причиной · повторный импорт не создаёт дублей</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1600px;font-size:24px;color:#6A6F7C">Код: app/etl/cleaning.py, app/etl/reviews.py · полный импорт — около 2 минут</p>
+<aside>Задача минимум. 141 605 строк → 141 590 игр, 15 отклонены (пустое название).</aside>
 </section>

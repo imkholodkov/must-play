@@ -1,20 +1,28 @@
-<section id="arch" data-transition="fade" style="background:#14161F;color:#F3F1EA;font-family:'Rubik', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:48px">
-<h2 style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;line-height:1.1">Как устроена система</h2>
-<div style="display:flex;gap:20px;align-items:center">
-<div style="flex:1;background:#1F2230;padding:32px;border-radius:16px"><h3 style="font-size:34px;font-weight:700;color:#F2A541">Данные</h3><p style="font-size:26px;color:#D4D6DE">Google Drive → скачивание → ETL</p></div>
-<x-icon name="PaperPlane" style="color:#8A90A0;width:48px;height:48px"></x-icon>
-<div style="flex:1;background:#1F2230;padding:32px;border-radius:16px"><h3 style="font-size:34px;font-weight:700;color:#F2A541">PostgreSQL</h3><p style="font-size:26px;color:#D4D6DE">19 таблиц, Alembic, ERD</p></div>
-<x-icon name="PaperPlane" style="color:#8A90A0;width:48px;height:48px"></x-icon>
-<div style="flex:1;background:#1F2230;padding:32px;border-radius:16px"><h3 style="font-size:34px;font-weight:700;color:#F2A541">Сервисы</h3><p style="font-size:26px;color:#D4D6DE">рейтинг, рекомендации, ML</p></div>
-<x-icon name="PaperPlane" style="color:#8A90A0;width:48px;height:48px"></x-icon>
-<div style="flex:1;background:#1F2230;padding:32px;border-radius:16px"><h3 style="font-size:34px;font-weight:700;color:#F2A541">FastAPI + UI</h3><p style="font-size:26px;color:#D4D6DE">21 эндпоинт, веб-страницы</p></div>
+<section id="arch" data-transition="fade" style="background:#14161F;color:#F3F1EA;font-family:'Rubik', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:36px">
+<h2 style="font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;line-height:1.1">Структура проекта</h2>
+<div style="display:flex;gap:32px">
+<div style="flex:4;display:flex;flex-direction:column;gap:12px;background:#1F2230;padding:32px;border-radius:16px">
+<p style="font-size:28px;font-weight:700;color:#F2A541">Папки</p>
+<table style="font-size:24px;color:#E4E2DA">
+<tr><td style="padding:7px 12px;font-family:monospace;color:#F2A541;width:34%">app/etl</td><td>скачивание и очистка данных</td></tr>
+<tr><td style="padding:7px 12px;font-family:monospace;color:#F2A541">app/models</td><td>таблицы БД (SQLAlchemy)</td></tr>
+<tr><td style="padding:7px 12px;font-family:monospace;color:#F2A541">app/services</td><td>рейтинг, рекомендации, метрики</td></tr>
+<tr><td style="padding:7px 12px;font-family:monospace;color:#F2A541">app/api</td><td>эндпоинты FastAPI</td></tr>
+<tr><td style="padding:7px 12px;font-family:monospace;color:#F2A541">app/ml · ml/</td><td>признаки, обучение, EDA-ноутбук</td></tr>
+<tr><td style="padding:7px 12px;font-family:monospace;color:#F2A541">frontend/</td><td>веб-страницы на JS</td></tr>
+<tr><td style="padding:7px 12px;font-family:monospace;color:#F2A541">migrations/</td><td>Alembic</td></tr>
+<tr><td style="padding:7px 12px;font-family:monospace;color:#F2A541">tests/</td><td>unit и интеграционные</td></tr>
+</table>
 </div>
-<ul style="font-size:30px;line-height:1.6;color:#D4D6DE">
-<li>Слои: роутеры → сервисы (бизнес-логика) → репозитории → модели</li>
-<li>Pydantic: раздельные схемы создания, обновления и ответа</li>
-<li>Единый формат ошибок: 400, 404, 409, 422, 503</li>
-<li>Фильтры, сортировка, пагинация; Swagger с примерами</li>
-<li>docker compose up — приложение и база одной командой</li>
-</ul>
-<aside>Связи M:N: игры и жанры, теги, категории, языки, разработчики.</aside>
+<div style="flex:4;display:flex;flex-direction:column;gap:12px;background:#1F2230;padding:32px;border-radius:16px">
+<p style="font-size:28px;font-weight:700;color:#5BA4E6">Как идёт запрос: открыть карточку игры</p>
+<p style="font-size:24px;font-family:monospace;color:#F2A541">GET /games/292030</p>
+<p style="font-size:23px;line-height:1.35;color:#E4E2DA"><b>1. Роутер</b> app/api/games.py<br><span style="color:#8A90A0">проверяет, что id — число, иначе 422</span></p>
+<p style="font-size:23px;line-height:1.35;color:#E4E2DA"><b>2. Сервис</b> app/services/games.py<br><span style="color:#8A90A0">решает, что делать: игры нет — 404, есть — собрать карточку</span></p>
+<p style="font-size:23px;line-height:1.35;color:#E4E2DA"><b>3. Репозиторий</b> app/repositories/games.py<br><span style="color:#8A90A0">SQL-запросы: игра, оценки, цитаты прессы, статус must play</span></p>
+<p style="font-size:23px;line-height:1.35;color:#E4E2DA"><b>4. Ответ</b> app/schemas/game.py<br><span style="color:#8A90A0">Pydantic собирает JSON строго по схеме</span></p>
+<p style="font-size:22px;line-height:1.35;color:#A9AEBB">Каждый слой делает одно дело, поэтому формулы тестируются без БД и HTTP</p>
+</div>
+</div>
+<aside>Связи многие-ко-многим: игры ↔ жанры, теги, категории, языки, разработчики. Схема — docs/erd.md.</aside>
 </section>
